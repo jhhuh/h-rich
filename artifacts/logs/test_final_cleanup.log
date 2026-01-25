@@ -1,0 +1,17 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (file src/HRich/Console.hs changed)
+ - h-rich-0.1.0.0 (test:h-rich-test) (dependency rebuilt)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[2 of 5] Compiling HRich.Style      ( src/HRich/Style.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.dyn_o ) [Source file changed]
+[4 of 5] Compiling HRich.Text       ( src/HRich/Text.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.dyn_o ) [Source file changed]
+src/HRich/Text.hs:63:46: error: [GHC-88464]
+    Variable not in scope: tagName :: String
+   |
+63 |             (']':next) -> go next pos ((pos, tagName) : openTags) spans acc
+   |                                              ^^^^^^^
+
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

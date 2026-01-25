@@ -1,0 +1,81 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (file src/HRich/Text.hs changed)
+ - h-rich-0.1.0.0 (test:h-rich-test) (dependency rebuilt)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[2 of 5] Compiling HRich.Style      ( src/HRich/Style.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.dyn_o ) [Source file changed]
+src/HRich/Style.hs:12:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Data.Maybe’ is redundant
+      except perhaps to import instances from ‘Data.Maybe’
+    To import instances alone, use: import Data.Maybe()
+   |
+12 | import Data.Maybe (fromMaybe)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+[4 of 5] Compiling HRich.Text       ( src/HRich/Text.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.dyn_o ) [Source file changed]
+src/HRich/Text.hs:51:14: warning: [GHC-40910] [-Wunused-local-binds]
+    Defined but not used: ‘tagName’
+   |
+51 |         let (tagName, rest) = break (== ']') xs
+   |              ^^^^^^^
+
+[5 of 5] Compiling HRich.Console    ( src/HRich/Console.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.dyn_o ) [HRich.Text changed]
+src/HRich/Console.hs:10:1: warning: [GHC-66111] [-Wunused-imports]
+    The qualified import of ‘Prelude’ is redundant
+      except perhaps to import instances from ‘Prelude’
+    To import instances alone, use: import Prelude()
+   |
+10 | import qualified Prelude as P
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/HRich/Console.hs:13:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘HRich.Style’ is redundant
+      except perhaps to import instances from ‘HRich.Style’
+    To import instances alone, use: import HRich.Style()
+   |
+13 | import HRich.Style
+   | ^^^^^^^^^^^^^^^^^^
+
+src/HRich/Console.hs:14:35: warning: [GHC-38856] [-Wunused-imports]
+    The import of ‘hPutStr’ from module ‘System.IO’ is redundant
+   |
+14 | import System.IO (Handle, stdout, hPutStr, hFlush, hIsTerminalDevice)
+   |                                   ^^^^^^^
+
+src/HRich/Console.hs:16:1: warning: [GHC-66111] [-Wunused-imports]
+    The qualified import of ‘Data.Text’ is redundant
+      except perhaps to import instances from ‘Data.Text’
+    To import instances alone, use: import Data.Text()
+   |
+16 | import qualified Data.Text as T
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Preprocessing test suite 'h-rich-test' for h-rich-0.1.0.0...
+Building test suite 'h-rich-test' for h-rich-0.1.0.0...
+[1 of 1] Compiling Main             ( test/Main.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/t/h-rich-test/build/h-rich-test/h-rich-test-tmp/Main.o ) [Source file changed]
+test/Main.hs:5:1: warning: [GHC-66111] [-Wunused-imports]
+    The qualified import of ‘HRich.Text’ is redundant
+      except perhaps to import instances from ‘HRich.Text’
+    To import instances alone, use: import HRich.Text()
+  |
+5 | import qualified HRich.Text as Text
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test/Main.hs:6:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Data.Text’ is redundant
+      except perhaps to import instances from ‘Data.Text’
+    To import instances alone, use: import Data.Text()
+  |
+6 | import Data.Text (Text)
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+
+[2 of 2] Linking /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/t/h-rich-test/build/h-rich-test/h-rich-test [Objects changed]
+Hello [38;2;255;0;0;1mWorld[0m!
+This is [34;3mHaskell Rich[0m.
+A [48;2;255;255;0myellow background[0m example.
+[1mBold [0m[1;3mand Italic[0m[1m text[0m
+[38;2;255;0;0mRed [0m[38;2;0;128;0mGreen [0m[34mBlue[0m[38;2;0;128;0m Green[0m[38;2;255;0;0m Red[0m
+[38;2;255;0;255;48;2;255;255;255;1;4mUnderline Bold Magenta on White[0m
+Escaped bracket: [red]this is not red[/red]
+Test complete.

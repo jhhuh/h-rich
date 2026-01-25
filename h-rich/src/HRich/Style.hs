@@ -9,7 +9,11 @@ module HRich.Style
 import HRich.Color
 import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, catMaybes)
+import Text.Megaparsec
+import Text.Megaparsec.Char
+import qualified Text.Megaparsec.Char.Lexer as L
+import Data.Void
 
 data Style = Style
     { color     :: Maybe Color
@@ -42,20 +46,70 @@ combineStyles base overlay = Style
     firstJust (Just x) _ = Just x
     firstJust Nothing y  = y
 
+type Parser = Parsec Void Text
+
 parseStyle :: Text -> Style
-parseStyle t = foldl applyWord emptyStyle (T.words (T.toLower t))
+parseStyle t = fromMaybe emptyStyle $ parseMaybe styleParser t
+
+styleParser :: Parser Style
+styleParser = do
+    space
+    parts <- many (lexeme partP)
+    return $ foldl (flip ($)) emptyStyle parts
   where
-    applyWord s "bold"      = s { bold = Just True }
-    applyWord s "not"       = s -- Handle "not bold" etc later if needed
-    applyWord s "dim"       = s { dim = Just True }
-    applyWord s "italic"    = s { italic = Just True }
-    applyWord s "underline" = s { underline = Just True }
-    applyWord s "blink"     = s { blink = Just True }
-    applyWord s "reverse"   = s { inverse = Just True }
-    applyWord s "strike"    = s { strike = Just True }
-    applyWord s w
-        | "on " `T.isPrefixOf` w = s { bgColor = parseColor (T.drop 3 w) }
-        | otherwise = 
-            case parseColor w of
-                Just c -> s { color = Just c }
-                Nothing -> s
+    lexeme = L.lexeme space
+    
+    partP :: Parser (Style -> Style)
+    partP = try onP <|> try notP <|> try aliasP <|> try colorP
+
+    onP = do
+        _ <- string "on"
+        space
+        cStr <- wordP
+        case parseColor (T.pack cStr) of
+            Just c -> return $ \s -> s { bgColor = Just c }
+            Nothing -> fail "invalid background color"
+
+    notP = do
+        _ <- string "not"
+        space
+        alias <- wordP
+        return $ \s -> disable alias s
+
+    aliasP = do
+        alias <- wordP
+        case applyAlias alias of
+            Just f -> return f
+            Nothing -> fail "not an alias"
+
+    colorP = do
+        cStr <- wordP
+        case parseColor (T.pack cStr) of
+            Just c -> return $ \s -> s { color = Just c }
+            Nothing -> fail "invalid color"
+
+    wordP = (:) <$> (letterChar <|> char '#') <*> many (alphaNumChar <|> char '-')
+
+    applyAlias "bold"      = Just $ \s -> s { bold = Just True }
+    applyAlias "b"         = Just $ \s -> s { bold = Just True }
+    applyAlias "dim"       = Just $ \s -> s { dim = Just True }
+    applyAlias "italic"    = Just $ \s -> s { italic = Just True }
+    applyAlias "i"         = Just $ \s -> s { italic = Just True }
+    applyAlias "underline" = Just $ \s -> s { underline = Just True }
+    applyAlias "u"         = Just $ \s -> s { underline = Just True }
+    applyAlias "blink"     = Just $ \s -> s { blink = Just True }
+    applyAlias "reverse"   = Just $ \s -> s { inverse = Just True }
+    applyAlias "strike"    = Just $ \s -> s { strike = Just True }
+    applyAlias "s"         = Just $ \s -> s { strike = Just True }
+    applyAlias _           = Nothing
+
+    disable "bold"      s = s { bold = Just False }
+    disable "dim"       s = s { dim = Just False }
+    disable "italic"    s = s { italic = Just False }
+    disable "underline" s = s { underline = Just False }
+    disable "blink"     s = s { blink = Just False }
+    disable "reverse"   s = s { inverse = Just False }
+    disable "strike"    s = s { strike = Just False }
+    disable _           s = s
+
+-- TODO: Refine Style parser to handle 'on' properly with Megaparsec combinators

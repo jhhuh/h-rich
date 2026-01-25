@@ -7,13 +7,10 @@ module HRich.Console
     ) where
 
 import Prelude hiding (print)
-import qualified Prelude as P
 import HRich.Text
 import HRich.Segment
-import HRich.Style
-import System.IO (Handle, stdout, hPutStr, hFlush, hIsTerminalDevice)
+import System.IO (Handle, stdout, hFlush, hIsTerminalDevice)
 import Data.Text (Text)
-import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 
 data Console = Console

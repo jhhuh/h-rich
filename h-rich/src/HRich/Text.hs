@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module HRich.Text
     ( HRichText(..)
     , Span(..)
@@ -11,6 +12,11 @@ import HRich.Segment
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.List (sortOn)
+import Text.Megaparsec
+import Text.Megaparsec.Char
+import Data.Void
+import Data.Maybe (fromMaybe)
+
 
 data Span = Span
     { spanStart :: Int
@@ -27,43 +33,54 @@ data HRichText = HRichText
 fromPlain :: Text -> HRichText
 fromPlain t = HRichText t [] emptyStyle
 
--- Basic BBCode-like parser based on Isocline/Rich logic
--- [style]content[/style]
-fromMarkup :: Text -> HRichText
-fromMarkup input = 
-    let (plain, spans) = parseMarkup input
-    in HRichText plain spans emptyStyle
+type Parser = Parsec Void Text
 
-parseMarkup :: Text -> (Text, [Span])
-parseMarkup input = go (T.unpack input) 0 [] [] ""
+fromMarkup :: Text -> HRichText
+fromMarkup input = case parse markupParser "" input of
+    Left _ -> fromPlain input
+    Right (plain, spans) -> HRichText plain spans emptyStyle
+
+markupParser :: Parser (Text, [Span])
+markupParser = do
+    chunks <- many chunkP
+    let (finalPlain, finalSpans) = foldl combine (T.empty, []) chunks
+          where
+            combine (tAcc, sAcc) (tChunk, sChunk) =
+                let offset = T.length tAcc
+                    sAdjusted = [ s { spanStart = spanStart s + offset, spanEnd = spanEnd s + offset } | s <- sChunk ]
+                in (tAcc `T.append` tChunk, sAcc ++ sAdjusted)
+    return (finalPlain, finalSpans)
+
+chunkP :: Parser (Text, [Span])
+chunkP = escapedP <|> taggedP <|> plainChunkP
   where
-    -- go input currentPos openTags spans resultPlain
-    go [] _ _ spans acc = (T.pack acc, spans)
-    go ('[':'/':xs) pos ((startPos, styleName):openTags) spans acc =
-        let (tagName, rest) = break (== ']') xs
-            style = parseStyle (T.pack styleName)
-            newSpan = Span startPos pos style
-        in case rest of
-            (']':next) -> go next pos openTags (newSpan : spans) acc
-            _ -> go xs pos ((startPos, styleName):openTags) spans (acc ++ "[/") -- Malformed
-    go ('[':xs) pos openTags spans acc =
-        let (tagName, rest) = break (== ']') xs
-        in case rest of
-            (']':next) -> go next pos ((pos, tagName) : openTags) spans acc
-            _ -> go xs (pos + 1) openTags spans (acc ++ "[")
-    go (x:xs) pos openTags spans acc =
-        go xs (pos + 1) openTags spans (acc ++ [x])
+    escapedP = do
+        _ <- char '\\'
+        c <- anySingle
+        return (T.singleton c, [])
+        
+    plainChunkP = do
+        t <- some (noneOf ['[', '\\'])
+        return (T.pack t, [])
+        
+    taggedP = do
+        _ <- char '['
+        styleName <- some (noneOf [']'])
+        _ <- char ']'
+        (innerPlain, innerSpans) <- markupParser -- Recursive for nesting
+        _ <- string "[/"
+        _ <- string (T.pack styleName) -- This should ideally match, but many BBCode parsers are loose
+        _ <- char ']'
+        let style = parseStyle (T.pack styleName)
+            outerSpan = Span 0 (T.length innerPlain) style
+        return (innerPlain, outerSpan : innerSpans)
 
 renderText :: HRichText -> [Segment]
 renderText (HRichText plain spans base) =
-    let -- Flatten spans into points of interest (start/end)
-        events = sortOn fst $ 
+    let events = sortOn fst $ 
                  (0, Left base) : 
-                 [(len, Right ()) | let len = T.length plain] ++
+                 [(T.length plain, Right ())] ++
                  concat [[(start, Left s), (end, Right ())] | Span start end s <- spans]
-        
-        -- This is a bit simplified. Rich uses a stack of styles.
-        -- We'll use a simple stack too.
         
         getSegments [] _ _ _Segments = reverse _Segments
         getSegments ((pos, ev):rest) currentPos styleStack _Segments =
@@ -76,6 +93,3 @@ renderText (HRichText plain spans base) =
             in getSegments rest pos newStack newSegments
             
     in getSegments events 0 [] []
-
--- Note: The above renderText is a bit naive in how it handles overlapping spans.
--- In a real implementation, we should be more careful with the stack.

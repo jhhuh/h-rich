@@ -75,6 +75,7 @@ library
     build-depends:    base ^>=4.20.2.0
                     , text
                     , containers
+                    , megaparsec
 
     -- Directories containing source files.
     hs-source-dirs:   src
