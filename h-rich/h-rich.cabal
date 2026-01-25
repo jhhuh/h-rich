@@ -67,6 +67,7 @@ library
                     , HRich.Box
                     , HRich.Renderable
                     , HRich.Panel
+                    , HRich.Columns
 
     -- Modules included in this library but not exported.
     -- other-modules:

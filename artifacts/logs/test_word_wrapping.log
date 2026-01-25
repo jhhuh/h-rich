@@ -1,0 +1,24 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (file src/HRich/Segment.hs changed)
+ - h-rich-0.1.0.0 (test:h-rich-test) (dependency rebuilt)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[4 of 8] Compiling HRich.Segment    ( src/HRich/Segment.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.dyn_o ) [Source file changed]
+src/HRich/Segment.hs:83:23: error: [GHC-88464]
+    Variable not in scope:
+      colorToAnsiCodes :: HRich.Color.Color -> Bool -> [String]
+   |
+83 |     [ maybe [] (\c -> colorToAnsiCodes c True) (color s)
+   |                       ^^^^^^^^^^^^^^^^
+
+src/HRich/Segment.hs:84:23: error: [GHC-88464]
+    Variable not in scope:
+      colorToAnsiCodes :: HRich.Color.Color -> Bool -> [String]
+   |
+84 |     , maybe [] (\c -> colorToAnsiCodes c False) (bgColor s)
+   |                       ^^^^^^^^^^^^^^^^
+
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

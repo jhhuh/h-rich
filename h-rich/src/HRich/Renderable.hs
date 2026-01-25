@@ -13,3 +13,5 @@ data ConsoleOptions = ConsoleOptions
 
 class Renderable a where
     render :: ConsoleOptions -> a -> [Segment]
+    renderLines :: ConsoleOptions -> a -> [[Segment]]
+    renderLines opts a = splitLines (render opts a)

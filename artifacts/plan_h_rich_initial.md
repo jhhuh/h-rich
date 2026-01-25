@@ -25,9 +25,12 @@ Bring the functionality of the `rich` Python library to Haskell, using a pure Ha
 7. [x] Create test suite and verify output.
 8. [x] Refine BBCode parser (Initial manual version).
 9. [x] Refactor parser using Megaparsec for robust syntax handling.
-10. [ ] Implement `Renderable` typeclass for extensible console components.
-11. [ ] Implement `Panel` component for bordered boxes.
-12. [ ] Implement line wrapping and basic layout system.
+10. [x] Implement `Renderable` typeclass for extensible console components.
+11. [x] Implement `Panel` component for bordered boxes (Initial version).
+12. [x] Implement `renderLines` and line-splitting logic for `Segment`s.
+13. [x] Implement line wrapping (soft/hard) for `HRichText`.
+14. [x] Improve `Panel` to support multi-line content and alignment.
+15. [x] Implement `Columns` or `Layout` system.
 
 ## Verification
 - Run `cabal run h-rich-test` and inspect terminal output.

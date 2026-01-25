@@ -27,9 +27,10 @@ defaultConsole = do
 print :: Renderable a => Console -> a -> IO ()
 print console r = do
     let options = ConsoleOptions 80 Nothing -- TODO: Dynamic width
-        segments = render options r
-    mapM_ (TIO.hPutStr (consoleHandle console) . renderSegment) segments
-    TIO.hPutStr (consoleHandle console) "\n"
+        lines' = renderLines options r
+    mapM_ (\line -> do
+        mapM_ (TIO.hPutStr (consoleHandle console) . renderSegment) line
+        TIO.hPutStr (consoleHandle console) "\n") lines'
     hFlush (consoleHandle console)
 
 printMarkup :: Console -> Text -> IO ()

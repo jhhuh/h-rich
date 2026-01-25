@@ -33,6 +33,7 @@ data HRichText = HRichText
 
 instance Renderable HRichText where
     render _ = renderText
+    renderLines opts t = wrapSegments (consoleWidth opts) (renderText t)
 
 fromPlain :: Text -> HRichText
 fromPlain t = HRichText t [] emptyStyle
