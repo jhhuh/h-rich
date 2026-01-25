@@ -9,13 +9,14 @@ module HRich.Text
 
 import HRich.Style
 import HRich.Segment
+import HRich.Renderable
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.List (sortOn)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import Data.Void
-import Data.Maybe (fromMaybe)
+
 
 
 data Span = Span
@@ -30,6 +31,9 @@ data HRichText = HRichText
     , baseStyle :: Style
     } deriving (Show, Eq)
 
+instance Renderable HRichText where
+    render _ = renderText
+
 fromPlain :: Text -> HRichText
 fromPlain t = HRichText t [] emptyStyle
 
@@ -42,7 +46,7 @@ fromMarkup input = case parse markupParser "" input of
 
 markupParser :: Parser (Text, [Span])
 markupParser = do
-    chunks <- many chunkP
+    chunks <- many (notFollowedBy (string "[/") >> chunkP)
     let (finalPlain, finalSpans) = foldl combine (T.empty, []) chunks
           where
             combine (tAcc, sAcc) (tChunk, sChunk) =
@@ -67,9 +71,9 @@ chunkP = escapedP <|> taggedP <|> plainChunkP
         _ <- char '['
         styleName <- some (noneOf [']'])
         _ <- char ']'
-        (innerPlain, innerSpans) <- markupParser -- Recursive for nesting
+        (innerPlain, innerSpans) <- markupParser
         _ <- string "[/"
-        _ <- string (T.pack styleName) -- This should ideally match, but many BBCode parsers are loose
+        _ <- string (T.pack styleName)
         _ <- char ']'
         let style = parseStyle (T.pack styleName)
             outerSpan = Span 0 (T.length innerPlain) style

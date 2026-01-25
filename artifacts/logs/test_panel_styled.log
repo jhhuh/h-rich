@@ -1,0 +1,23 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (file src/HRich/Panel.hs changed)
+ - h-rich-0.1.0.0 (test:h-rich-test) (dependency rebuilt)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[2 of 8] Compiling HRich.Color      ( src/HRich/Color.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.dyn_o ) [Source file changed]
+[7 of 8] Compiling HRich.Panel      ( src/HRich/Panel.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Panel.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Panel.dyn_o ) [Source file changed]
+Preprocessing test suite 'h-rich-test' for h-rich-0.1.0.0...
+Building test suite 'h-rich-test' for h-rich-0.1.0.0...
+[1 of 1] Compiling Main             ( test/Main.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/t/h-rich-test/build/h-rich-test/h-rich-test-tmp/Main.o ) [HRich.Panel changed]
+[2 of 2] Linking /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/t/h-rich-test/build/h-rich-test/h-rich-test [Objects changed]
+Hello [bold red]World[/bold red]!
+This is [italic blue]Haskell Rich[/italic blue].
+A [on yellow]yellow background[/on yellow] example.
+[b]Bold [i]and Italic[/i] text[/b]
+[red]Red [green]Green [blue]Blue[/blue] Green[/green] Red[/red]
+[u b magenta on white]Underline Bold Magenta on White[/u b magenta on white]
+Escaped bracket: [red]this is not red[/red]
+╭──────────────────────────────────────────────────────────────────────────────╮
+│This is a [bold]Panel[/bold] content!                                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Test complete.

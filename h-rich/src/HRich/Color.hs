@@ -9,10 +9,10 @@ module HRich.Color
 import Data.Word (Word8)
 import Data.Text (Text)
 import qualified Data.Text as T
+
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import Text.Read (readMaybe)
-import Data.Char (isHexDigit)
 import Numeric (readHex)
 
 data Color
@@ -32,6 +32,7 @@ data ColorSystem
 toAnsiCodes :: Color -> Bool -> [String]
 toAnsiCodes color foreground =
     let prefix = if foreground then "38" else "48"
+        basicPrefix, brightPrefix :: Int
         basicPrefix = if foreground then 30 else 40
         brightPrefix = if foreground then 90 else 100
     in case color of

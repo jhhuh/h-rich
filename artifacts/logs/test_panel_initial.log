@@ -1,0 +1,508 @@
+Resolving dependencies...
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (cannot read state cache)
+ - h-rich-0.1.0.0 (test:h-rich-test) (cannot read state cache)
+Configuring library for h-rich-0.1.0.0...
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[1 of 8] Compiling HRich.Box        ( src/HRich/Box.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Box.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Box.dyn_o )
+src/HRich/Box.hs:21:14: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the first argument of ‘Box’, namely ‘"┌"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |              ^^^
+
+src/HRich/Box.hs:21:18: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the second argument of ‘Box’, namely ‘"─"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                  ^^^
+
+src/HRich/Box.hs:21:22: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the third argument of ‘Box’, namely ‘"┐"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                      ^^^
+
+src/HRich/Box.hs:21:26: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fourth argument of ‘Box’, namely ‘"│"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                          ^^^
+
+src/HRich/Box.hs:21:30: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fifth argument of ‘Box’, namely ‘" "’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                              ^^^
+
+src/HRich/Box.hs:21:34: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the sixth argument of ‘Box’, namely ‘"│"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                                  ^^^
+
+src/HRich/Box.hs:21:38: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 7th argument of ‘Box’, namely ‘"└"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                                      ^^^
+
+src/HRich/Box.hs:21:42: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 8th argument of ‘Box’, namely ‘"─"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                                          ^^^
+
+src/HRich/Box.hs:21:46: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 9th argument of ‘Box’, namely ‘"┘"’
+      In the expression: Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+      In an equation for ‘square’:
+          square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |
+21 | square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+   |                                              ^^^
+
+src/HRich/Box.hs:24:15: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the first argument of ‘Box’, namely ‘"╭"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |               ^^^
+
+src/HRich/Box.hs:24:19: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the second argument of ‘Box’, namely ‘"─"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                   ^^^
+
+src/HRich/Box.hs:24:23: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the third argument of ‘Box’, namely ‘"╮"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                       ^^^
+
+src/HRich/Box.hs:24:27: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fourth argument of ‘Box’, namely ‘"│"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                           ^^^
+
+src/HRich/Box.hs:24:31: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fifth argument of ‘Box’, namely ‘" "’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                               ^^^
+
+src/HRich/Box.hs:24:35: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the sixth argument of ‘Box’, namely ‘"│"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                                   ^^^
+
+src/HRich/Box.hs:24:39: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 7th argument of ‘Box’, namely ‘"╰"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                                       ^^^
+
+src/HRich/Box.hs:24:43: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 8th argument of ‘Box’, namely ‘"─"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                                           ^^^
+
+src/HRich/Box.hs:24:47: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 9th argument of ‘Box’, namely ‘"╯"’
+      In the expression: Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+      In an equation for ‘rounded’:
+          rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |
+24 | rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+   |                                               ^^^
+
+src/HRich/Box.hs:27:13: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the first argument of ‘Box’, namely ‘"┏"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |             ^^^
+
+src/HRich/Box.hs:27:17: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the second argument of ‘Box’, namely ‘"━"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                 ^^^
+
+src/HRich/Box.hs:27:21: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the third argument of ‘Box’, namely ‘"┓"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                     ^^^
+
+src/HRich/Box.hs:27:25: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fourth argument of ‘Box’, namely ‘"┃"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                         ^^^
+
+src/HRich/Box.hs:27:29: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fifth argument of ‘Box’, namely ‘" "’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                             ^^^
+
+src/HRich/Box.hs:27:33: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the sixth argument of ‘Box’, namely ‘"┃"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                                 ^^^
+
+src/HRich/Box.hs:27:37: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 7th argument of ‘Box’, namely ‘"┗"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                                     ^^^
+
+src/HRich/Box.hs:27:41: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 8th argument of ‘Box’, namely ‘"━"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                                         ^^^
+
+src/HRich/Box.hs:27:45: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 9th argument of ‘Box’, namely ‘"┛"’
+      In the expression: Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+      In an equation for ‘heavy’:
+          heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |
+27 | heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+   |                                             ^^^
+
+src/HRich/Box.hs:30:14: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the first argument of ‘Box’, namely ‘"╔"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |              ^^^
+
+src/HRich/Box.hs:30:18: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the second argument of ‘Box’, namely ‘"═"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                  ^^^
+
+src/HRich/Box.hs:30:22: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the third argument of ‘Box’, namely ‘"╗"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                      ^^^
+
+src/HRich/Box.hs:30:26: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fourth argument of ‘Box’, namely ‘"║"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                          ^^^
+
+src/HRich/Box.hs:30:30: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the fifth argument of ‘Box’, namely ‘" "’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                              ^^^
+
+src/HRich/Box.hs:30:34: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the sixth argument of ‘Box’, namely ‘"║"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                                  ^^^
+
+src/HRich/Box.hs:30:38: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 7th argument of ‘Box’, namely ‘"╚"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                                      ^^^
+
+src/HRich/Box.hs:30:42: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 8th argument of ‘Box’, namely ‘"═"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                                          ^^^
+
+src/HRich/Box.hs:30:46: error: [GHC-83865]
+    • Couldn't match type ‘[Char]’ with ‘Text’
+      Expected: Text
+        Actual: String
+    • In the 9th argument of ‘Box’, namely ‘"╝"’
+      In the expression: Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+      In an equation for ‘double’:
+          double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |
+30 | double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+   |                                              ^^^
+
+[2 of 8] Compiling HRich.Color      ( src/HRich/Color.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.dyn_o ) [Flags changed]
+src/HRich/Color.hs:15:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Data.Char’ is redundant
+      except perhaps to import instances from ‘Data.Char’
+    To import instances alone, use: import Data.Char()
+   |
+15 | import Data.Char (isHexDigit)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/HRich/Color.hs:35:42: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘a0’ to type ‘Integer’ in the following constraints
+        (Num a0)
+          arising from the literal ‘30’ at src/HRich/Color.hs:35:42-43
+        (Show a0)
+          arising from a use of ‘show’ at src/HRich/Color.hs:40:29-32
+    • In the expression: 30
+      In the expression: if foreground then 30 else 40
+      In an equation for ‘basicPrefix’:
+          basicPrefix = if foreground then 30 else 40
+   |
+35 |         basicPrefix = if foreground then 30 else 40
+   |                                          ^^
+
+src/HRich/Color.hs:36:43: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘a0’ to type ‘Integer’ in the following constraints
+        (Num a0)
+          arising from the literal ‘90’ at src/HRich/Color.hs:36:43-44
+        (Show a0)
+          arising from a use of ‘show’ at src/HRich/Color.hs:41:29-32
+    • In the expression: 90
+      In the expression: if foreground then 90 else 100
+      In an equation for ‘brightPrefix’:
+          brightPrefix = if foreground then 90 else 100
+   |
+36 |         brightPrefix = if foreground then 90 else 100
+   |                                           ^^
+
+[3 of 8] Compiling HRich.Style      ( src/HRich/Style.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.dyn_o ) [Flags changed]
+src/HRich/Style.hs:12:31: warning: [GHC-38856] [-Wunused-imports]
+    The import of ‘catMaybes’ from module ‘Data.Maybe’ is redundant
+   |
+12 | import Data.Maybe (fromMaybe, catMaybes)
+   |                               ^^^^^^^^^
+
+[4 of 8] Compiling HRich.Segment    ( src/HRich/Segment.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.dyn_o ) [Flags changed]
+[5 of 8] Compiling HRich.Renderable ( src/HRich/Renderable.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.dyn_o )
+src/HRich/Renderable.hs:7:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘HRich.Style’ is redundant
+      except perhaps to import instances from ‘HRich.Style’
+    To import instances alone, use: import HRich.Style()
+  |
+7 | import HRich.Style (Style)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+[6 of 8] Compiling HRich.Text       ( src/HRich/Text.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.dyn_o ) [Source file changed]
+src/HRich/Text.hs:19:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Data.Maybe’ is redundant
+      except perhaps to import instances from ‘Data.Maybe’
+    To import instances alone, use: import Data.Maybe()
+   |
+19 | import Data.Maybe (fromMaybe)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+[8 of 8] Compiling HRich.Console    ( src/HRich/Console.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.dyn_o ) [Source file changed]
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

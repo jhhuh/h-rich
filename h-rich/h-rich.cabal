@@ -64,6 +64,9 @@ library
                     , HRich.Segment
                     , HRich.Text
                     , HRich.Console
+                    , HRich.Box
+                    , HRich.Renderable
+                    , HRich.Panel
 
     -- Modules included in this library but not exported.
     -- other-modules:

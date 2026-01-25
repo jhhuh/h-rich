@@ -2,6 +2,8 @@
 module Main where
 
 import qualified HRich.Console as Console
+import qualified HRich.Panel as Panel
+import qualified HRich.Text as Text
 import qualified Prelude as P
 import Prelude (IO)
 
@@ -20,5 +22,8 @@ main = do
     
     -- Test escaping
     Console.printMarkup console "Escaped bracket: \\[red]this is not red\\[/red]"
+    
+    -- Test Panel
+    Console.print console (Panel.panel (Text.fromMarkup "This is a [bold]Panel[/bold] content!"))
     
     P.putStrLn "Test complete."

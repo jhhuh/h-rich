@@ -9,6 +9,7 @@ module HRich.Console
 import Prelude hiding (print)
 import HRich.Text
 import HRich.Segment
+import HRich.Renderable
 import System.IO (Handle, stdout, hFlush, hIsTerminalDevice)
 import Data.Text (Text)
 import qualified Data.Text.IO as TIO
@@ -23,9 +24,10 @@ defaultConsole = do
     isTerm <- hIsTerminalDevice stdout
     return $ Console stdout isTerm
 
-print :: Console -> HRichText -> IO ()
-print console t = do
-    let segments = renderText t
+print :: Renderable a => Console -> a -> IO ()
+print console r = do
+    let options = ConsoleOptions 80 Nothing -- TODO: Dynamic width
+        segments = render options r
     mapM_ (TIO.hPutStr (consoleHandle console) . renderSegment) segments
     TIO.hPutStr (consoleHandle console) "\n"
     hFlush (consoleHandle console)

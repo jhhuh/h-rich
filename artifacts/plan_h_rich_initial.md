@@ -24,8 +24,10 @@ Bring the functionality of the `rich` Python library to Haskell, using a pure Ha
 6. [x] Implement `HRich.Console`.
 7. [x] Create test suite and verify output.
 8. [x] Refine BBCode parser (Initial manual version).
-9. [ ] Refactor parser using Megaparsec for robust syntax handling.
-10. [ ] Implement layout system (future work).
+9. [x] Refactor parser using Megaparsec for robust syntax handling.
+10. [ ] Implement `Renderable` typeclass for extensible console components.
+11. [ ] Implement `Panel` component for bordered boxes.
+12. [ ] Implement line wrapping and basic layout system.
 
 ## Verification
 - Run `cabal run h-rich-test` and inspect terminal output.
