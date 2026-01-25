@@ -1,0 +1,32 @@
+Resolving dependencies...
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (configuration changed)
+ - h-rich-0.1.0.0 (exe:h-rich-demo) (first run)
+Configuring library for h-rich-0.1.0.0...
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+Configuring executable 'h-rich-demo' for h-rich-0.1.0.0...
+Preprocessing executable 'h-rich-demo' for h-rich-0.1.0.0...
+Building executable 'h-rich-demo' for h-rich-0.1.0.0...
+[1 of 1] Compiling Main             ( demo/Main.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/x/h-rich-demo/build/h-rich-demo/h-rich-demo-tmp/Main.o )
+demo/Main.hs:36:83: error: [GHC-39999]
+    • No instance for ‘P.Semigroup Text.HRichText’
+        arising from a use of ‘P.<>’
+    • In the first argument of ‘Panel.panel’, namely
+        ‘(Text.fromMarkup "[yellow]Styles & Colors[/yellow]\n\n"
+            P.<> (Text.fromMarkup "See the panel below."))’
+      In the expression:
+        Panel.panel
+          (Text.fromMarkup "[yellow]Styles & Colors[/yellow]\n\n"
+             P.<> (Text.fromMarkup "See the panel below."))
+      In the first argument of ‘Columns.columns’, namely
+        ‘[Panel.panel
+            (Text.fromMarkup "[yellow]Styles & Colors[/yellow]\n\n"
+               P.<> (Text.fromMarkup "See the panel below.")),
+          Panel.panel
+            (Text.fromMarkup "[cyan]Layouts[/cyan]\n\nResponsive grids.")]’
+   |
+36 |             [ Panel.panel (Text.fromMarkup "[yellow]Styles & Colors[/yellow]\n\n" P.<> (Text.fromMarkup "See the panel below."))
+   |                                                                                   ^^^^
+

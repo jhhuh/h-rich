@@ -117,3 +117,13 @@ test-suite h-rich-test
         base ^>=4.20.2.0,
         h-rich,
         text
+
+executable h-rich-demo
+    import:           warnings
+    default-language: GHC2024
+    hs-source-dirs:   demo
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.20.2.0,
+        h-rich,
+        text
