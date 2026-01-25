@@ -6,7 +6,10 @@ import qualified HRich.Panel as Panel
 import qualified HRich.Columns as Columns
 import qualified HRich.Table as Table
 import qualified HRich.Progress as Progress
+import qualified HRich.Tree as Tree
+import qualified HRich.Syntax as Syntax
 import qualified HRich.Text as Text
+import qualified HRich.Segment as Segment
 import qualified Prelude as P
 import Prelude (IO, ($), (.), id, return)
 
@@ -39,9 +42,30 @@ main = do
 
     let dashboard = Panel.panel $ Columns.columns [styles, colors]
 
+    -- Tree Demo
+    let treeNode = Tree.Node (Text.fromMarkup "[bold]Root[/bold]") 
+            [ Tree.Node (Text.fromMarkup "Child 1") []
+            , Tree.Node (Text.fromMarkup "Child 2")
+                [ Tree.Node (Text.fromMarkup "Grandchild A") []
+                , Tree.Node (Text.fromMarkup "[red]Grandchild B[/red]") []
+                ]
+            , Tree.Node (Text.fromMarkup "Child 3") []
+            ]
+    
+    -- Let's construct a tree panel properly
+    let treeRendered = Tree.Tree treeNode
+    
+    -- Syntax Demo
+    let jsonSource = "{\n  \"key\": \"value\",\n  \"number\": 123,\n  \"bool\": true,\n  \"null\": null\n}"
+    let syntaxView = Panel.panel (Syntax.highlightJson jsonSource)
+
     Console.print console header
     Console.print console intro
     Console.print console layout
     Console.print console dashboard
     Console.print console movieTable
+    Console.printMarkup console "\n[bold]Tree View:[/bold]"
+    Console.print console treeRendered
+    Console.printMarkup console "\n[bold]Syntax Highlighting (JSON):[/bold]"
+    Console.print console syntaxView
     Console.print console (Panel.panel progress)

@@ -70,6 +70,9 @@ library
                     , HRich.Columns
                     , HRich.Table
                     , HRich.Progress
+                    , HRich.Prompt
+                    , HRich.Tree
+                    , HRich.Syntax
 
     -- Modules included in this library but not exported.
     -- other-modules:
