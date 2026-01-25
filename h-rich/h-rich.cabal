@@ -59,7 +59,11 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  MyLib
+    exposed-modules:  HRich.Color
+                    , HRich.Style
+                    , HRich.Segment
+                    , HRich.Text
+                    , HRich.Console
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -69,6 +73,8 @@ library
 
     -- Other library packages from which modules are imported.
     build-depends:    base ^>=4.20.2.0
+                    , text
+                    , containers
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -101,4 +107,5 @@ test-suite h-rich-test
     -- Test dependencies.
     build-depends:
         base ^>=4.20.2.0,
-        h-rich
+        h-rich,
+        text

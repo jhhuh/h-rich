@@ -1,0 +1,6 @@
+Hello [38;2;255;0;0;1mWorld[0m!
+This is [34;3mHaskell Rich[0m.
+A [30mstyled background[0m example.
+[1mBold [0m[1;3mand Italic[0m[1m text[0m
+[38;2;255;0;0mRed [0m[38;2;0;128;0mGreen [0m[34mBlue[0m[38;2;0;128;0m Green[0m[38;2;255;0;0m Red[0m
+Test complete.
