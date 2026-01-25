@@ -8,6 +8,7 @@ import qualified HRich.Table as Table
 import qualified HRich.Progress as Progress
 import qualified HRich.Tree as Tree
 import qualified HRich.Syntax as Syntax
+import qualified HRich.Markdown as Markdown
 import qualified HRich.Text as Text
 import qualified HRich.Segment as Segment
 import qualified Prelude as P
@@ -59,6 +60,10 @@ main = do
     let jsonSource = "{\n  \"key\": \"value\",\n  \"number\": 123,\n  \"bool\": true,\n  \"null\": null\n}"
     let syntaxView = Panel.panel (Syntax.highlightJson jsonSource)
 
+    -- Markdown Demo
+    let mdSource = "# Markdown Support\n\nThis is a *paragraph* with [bold]rich text[/bold].\n\n- Item 1\n- Item 2\n\n```\ncode block\n```"
+    let mdView = Panel.panel (Markdown.renderMarkdown mdSource)
+
     Console.print console header
     Console.print console intro
     Console.print console layout
@@ -68,4 +73,6 @@ main = do
     Console.print console treeRendered
     Console.printMarkup console "\n[bold]Syntax Highlighting (JSON):[/bold]"
     Console.print console syntaxView
+    Console.printMarkup console "\n[bold]Markdown Rendering:[/bold]"
+    Console.print console mdView
     Console.print console (Panel.panel progress)
