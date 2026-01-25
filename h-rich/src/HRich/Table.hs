@@ -1,9 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ExistentialQuantification #-}
+{-|
+Module      : HRich.Table
+Description : Table component for tabular data.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines the 'Table' component, enabling the rendering of data
+in rows and columns with configurable headers, borders, and alignment.
+-}
 module HRich.Table
-    ( Table(..)
+    ( -- * Table Constants
+      Table(..)
     , TableColumn(..)
-    , table, addColumn, addRow
+      -- * Construction
+    , table
+    , addColumn
+    , addRow
     ) where
 
 import HRich.Renderable
@@ -88,23 +101,11 @@ renderTableRow items colWidth box' style' isHeader =
         
     in topBorder : contentLines
 
-intercalateSegment :: Segment -> [[Segment]] -> [Segment]
-intercalateSegment _ [] = []
-intercalateSegment _ [x] = x
-intercalateSegment sep (x:xs) = x ++ (sep : intercalateSegment sep xs)
 
 padLinesTable :: Int -> Int -> [[Segment]] -> [[Segment]]
 padLinesTable target n lines' =
     let currentLen = length lines'
         paddingNeeded = target - currentLen
         emptyLine = [Segment (T.replicate n " ") Nothing]
-        paddedExisting = map (padLineToWidthTable n) lines'
+        paddedExisting = map (padToWidth n) lines'
     in paddedExisting ++ replicate paddingNeeded emptyLine
-
-padLineToWidthTable :: Int -> [Segment] -> [Segment]
-padLineToWidthTable n segments =
-    let currentLen = sum [ T.length (segmentText s) | s <- segments ]
-        needed = n - currentLen
-    in if needed <= 0 
-       then segments 
-       else segments ++ [Segment (T.replicate needed " ") Nothing]

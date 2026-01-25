@@ -1,7 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExistentialQuantification #-}
+{-|
+Module      : HRich.Columns
+Description : Layout component for side-by-side rendering.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines the 'Columns' component, which arranges a list of
+Renderable items horizontally with equal width distribution.
+-}
 module HRich.Columns
-    ( Columns(..)
+    ( -- * Columns Type
+      Columns(..)
     , columns
     ) where
 
@@ -44,24 +55,11 @@ instance Renderable Columns where
 
         in map joinLines [0..maxLines-1]
 
-intercalateSegment :: Segment -> [[Segment]] -> [Segment]
-intercalateSegment _ [] = []
-intercalateSegment _ [x] = x
-intercalateSegment sep (x:xs) = x ++ (sep : intercalateSegment sep xs)
-
 padLines :: Int -> Int -> [[Segment]] -> [[Segment]]
 padLines target n lines' =
     let currentLen = length lines'
         paddingNeeded = target - currentLen
         emptyLine = [Segment (T.replicate n " ") Nothing]
         -- Pad existing lines to width n
-        paddedExisting = map (padLineToWidth n) lines'
+        paddedExisting = map (padToWidth n) lines'
     in paddedExisting ++ replicate paddingNeeded emptyLine
-
-padLineToWidth :: Int -> [Segment] -> [Segment]
-padLineToWidth n segments =
-    let currentLen = sum [ T.length (segmentText s) | s <- segments ]
-        needed = n - currentLen
-    in if needed <= 0 
-       then segments 
-       else segments ++ [Segment (T.replicate needed " ") Nothing]

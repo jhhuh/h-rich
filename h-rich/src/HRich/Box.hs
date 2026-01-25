@@ -1,7 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Box
+Description : Terminal box formatting characters.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines standard box-drawing characters used for Panels, Tables,
+and other bordered components.
+-}
 module HRich.Box
-    ( Box(..)
-    , square, rounded, heavy, double
+    ( -- * Box Type
+      Box(..)
+      -- * Standard Styles
+    , square
+    , rounded
+    , heavy
+    , double
     ) where
 
 import Data.Text (Text)

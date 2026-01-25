@@ -1,7 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Console
+Description : Console output interface.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module provides the main entry points for printing renderable components
+to the terminal. It handles terminal width detection and low-level I/O.
+-}
 module HRich.Console
-    ( Console(..)
+    ( -- * Console Handle
+      Console(..)
     , defaultConsole
+      -- * Printing
     , print
     , printMarkup
     ) where

@@ -1,9 +1,24 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Segment
+Description : Styled text segments and line wrapping logic.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines 'Segment', the atomic unit of rendered styled text,
+and provides utility functions for converting styles to ANSI codes,
+wrapping text, and handling multi-line segments.
+-}
 module HRich.Segment
-    ( Segment(..)
+    ( -- * Segment Type
+      Segment(..)
     , renderSegment
+      -- * Layout Utilities
     , splitLines
     , wrapSegments
+    , intercalateSegment
+    , padToWidth
     ) where
 
 import HRich.Style
@@ -24,6 +39,19 @@ renderSegment (Segment txt (Just style)) =
     in if null codes
        then txt
        else T.pack ("\x1b[" ++ intercalate ";" codes ++ "m") `T.append` txt `T.append` "\x1b[0m"
+
+intercalateSegment :: Segment -> [[Segment]] -> [Segment]
+intercalateSegment _ [] = []
+intercalateSegment _ [x] = x
+intercalateSegment sep (x:xs) = x ++ (sep : intercalateSegment sep xs)
+
+padToWidth :: Int -> [Segment] -> [Segment]
+padToWidth n segments =
+    let currentLen = sum [ T.length (segmentText s) | s <- segments ]
+        needed = n - currentLen
+    in if needed <= 0 
+       then segments 
+       else segments ++ [Segment (T.replicate needed " ") Nothing]
 
 splitLines :: [Segment] -> [[Segment]]
 splitLines [] = []

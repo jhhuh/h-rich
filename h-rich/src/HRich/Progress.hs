@@ -1,6 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Progress
+Description : Terminal progress bar component.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines the 'Progress' component, allowing the rendering of
+completion bars with percentage indicators and optional labels.
+-}
 module HRich.Progress
-    ( Progress(..)
+    ( -- * Progress Type
+      Progress(..)
+      -- * Construction
     , progressBar
     ) where
 

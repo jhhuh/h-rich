@@ -1,7 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExistentialQuantification #-}
+{-|
+Module      : HRich.Panel
+Description : A renderable container with borders.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module provides the 'Panel' component, which wraps another renderable
+component in a styled box.
+-}
 module HRich.Panel
-    ( Panel(..)
+    ( -- * Panel Type
+      Panel(..)
     , panel
     ) where
 
@@ -30,9 +41,8 @@ instance Renderable Panel where
         let width = consoleWidth options
             contentWidth = width - 2
             
-            topLine = [Segment (boxTop box' `T.append` T.replicate contentWidth (boxTop box') `T.append` boxTopRight box') (Just style')]
-            -- Wait, top_left was correct before.
-            topLineFixed = [Segment (boxTopLeft box' `T.append` T.replicate contentWidth (boxTop box') `T.append` boxTopRight box') (Just style')]
+            
+            topLine = [Segment (boxTopLeft box' `T.append` T.replicate contentWidth (boxTop box') `T.append` boxTopRight box') (Just style')]
             
             -- Render the content as lines
             contentLines = renderLines (options { consoleWidth = contentWidth }) r
@@ -49,4 +59,4 @@ instance Renderable Panel where
             
             bottomLine = [Segment (boxBottomLeft box' `T.append` T.replicate contentWidth (boxBottom box') `T.append` boxBottomRight box') (Just style')]
             
-        in topLineFixed : midLines ++ [bottomLine]
+        in topLine : midLines ++ [bottomLine]

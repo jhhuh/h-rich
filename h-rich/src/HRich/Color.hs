@@ -1,7 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Color
+Description : ANSI and TrueColor definitions.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines the 'Color' type and support for standard ANSI colors,
+256-color palette, and 24-bit TrueColor. It also includes parsing logic for
+color names and RGB definitions.
+-}
 module HRich.Color 
-    ( Color(..)
+    ( -- * Color Types
+      Color(..)
     , ColorSystem(..)
+      -- * Parsing and Rendering
     , parseColor
     , toAnsiCodes
     ) where

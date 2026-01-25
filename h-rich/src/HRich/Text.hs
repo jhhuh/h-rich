@@ -1,7 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Text
+Description : Rich text representation and parsing.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines 'HRichText', which represents styled text with spans.
+It parses markup strings (e.g. "[bold]Text[/bold]") into a structured representation.
+-}
 module HRich.Text
-    ( HRichText(..)
+    ( -- * Rich Text Types
+      HRichText(..)
     , Span(..)
+      -- * Construction
     , fromPlain
     , fromMarkup
     , renderText

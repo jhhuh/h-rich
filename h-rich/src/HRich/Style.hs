@@ -1,7 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-|
+Module      : HRich.Style
+Description : Terminal styling attributes.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines text styles including bold, italic, underline, and color.
+It provides functions to parse style strings (e.g., "bold red on white")
+and combine styles.
+-}
 module HRich.Style
-    ( Style(..)
+    ( -- * Style Type
+      Style(..)
     , emptyStyle
+      -- * Operations
     , parseStyle
     , combineStyles
     ) where

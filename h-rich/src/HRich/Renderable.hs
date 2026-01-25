@@ -1,5 +1,16 @@
+{-|
+Module      : HRich.Renderable
+Description : Typeclass for renderable terminal components.
+Copyright   : (c) Ji-Haeng Huh, 2025
+License     : BSD-3-Clause
+Maintainer  : jhhuh.note@gmail.com
+
+This module defines the 'Renderable' typeclass, which is the core interface
+for anything that can be turned into styled segments for console output.
+-}
 module HRich.Renderable
-    ( Renderable(..)
+    ( -- * Core Typeclass
+      Renderable(..)
     , ConsoleOptions(..)
     ) where
 

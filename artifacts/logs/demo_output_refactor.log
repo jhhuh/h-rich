@@ -1,0 +1,28 @@
+Resolving dependencies...
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (cannot read state cache)
+ - h-rich-0.1.0.0 (exe:h-rich-demo) (dependency rebuilt)
+Configuring library for h-rich-0.1.0.0...
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[ 1 of 11] Compiling HRich.Box        ( src/HRich/Box.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Box.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Box.dyn_o ) [Source file changed]
+[ 2 of 11] Compiling HRich.Color      ( src/HRich/Color.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.dyn_o ) [Source file changed]
+[ 3 of 11] Compiling HRich.Style      ( src/HRich/Style.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.dyn_o ) [Source file changed]
+[ 4 of 11] Compiling HRich.Segment    ( src/HRich/Segment.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.dyn_o ) [Source file changed]
+[ 5 of 11] Compiling HRich.Renderable ( src/HRich/Renderable.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.dyn_o ) [Source file changed]
+[ 6 of 11] Compiling HRich.Columns    ( src/HRich/Columns.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Columns.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Columns.dyn_o ) [Source file changed]
+[ 7 of 11] Compiling HRich.Progress   ( src/HRich/Progress.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Progress.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Progress.dyn_o ) [Source file changed]
+[ 8 of 11] Compiling HRich.Panel      ( src/HRich/Panel.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Panel.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Panel.dyn_o ) [Source file changed]
+[ 9 of 11] Compiling HRich.Text       ( src/HRich/Text.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.dyn_o ) [Source file changed]
+[10 of 11] Compiling HRich.Table      ( src/HRich/Table.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Table.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Table.dyn_o ) [Source file changed]
+src/HRich/Table.hs:105:5: error: [GHC-58481]
+    parse error on input ‘in’
+    |
+105 |     in topBorder : contentLines
+    |     ^^
+
+[11 of 11] Compiling HRich.Console    ( src/HRich/Console.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.dyn_o ) [Source file changed]
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by exe:h-rich-demo from h-rich-0.1.0.0).
+
