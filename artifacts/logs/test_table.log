@@ -1,0 +1,23 @@
+Resolving dependencies...
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (cannot read state cache)
+ - h-rich-0.1.0.0 (test:h-rich-test) (cannot read state cache)
+Configuring library for h-rich-0.1.0.0...
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[ 1 of 10] Compiling HRich.Box        ( src/HRich/Box.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Box.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Box.dyn_o ) [Source file changed]
+[ 2 of 10] Compiling HRich.Color      ( src/HRich/Color.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Color.dyn_o ) [Flags changed]
+[ 3 of 10] Compiling HRich.Style      ( src/HRich/Style.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Style.dyn_o ) [Flags changed]
+[ 4 of 10] Compiling HRich.Segment    ( src/HRich/Segment.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Segment.dyn_o ) [Flags changed]
+[ 5 of 10] Compiling HRich.Renderable ( src/HRich/Renderable.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.dyn_o ) [Source file changed]
+src/HRich/Renderable.hs:28:53: error: [GHC-76037]
+    Not in scope: ‘T.length’
+    NB: no module named ‘T’ is imported.
+   |
+28 |             maxWidth = maximum (0 : map (sum . map (T.length . segmentText)) lines')
+   |                                                     ^^^^^^^^
+
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

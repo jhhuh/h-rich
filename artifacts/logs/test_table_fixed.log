@@ -1,0 +1,62 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (cannot read state cache)
+ - h-rich-0.1.0.0 (test:h-rich-test) (cannot read state cache)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[ 5 of 10] Compiling HRich.Renderable ( src/HRich/Renderable.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Renderable.dyn_o ) [Source file changed]
+[ 6 of 10] Compiling HRich.Columns    ( src/HRich/Columns.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Columns.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Columns.dyn_o ) [Flags changed]
+[ 7 of 10] Compiling HRich.Panel      ( src/HRich/Panel.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Panel.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Panel.dyn_o ) [Source file changed]
+src/HRich/Panel.hs:33:13: warning: [GHC-40910] [-Wunused-local-binds]
+    Defined but not used: ‘topLine’
+   |
+33 |             topLine = [Segment (boxTop box' `T.append` T.replicate contentWidth (boxTop box') `T.append` boxTopRight box') (Just style')]
+   |             ^^^^^^^
+
+[ 8 of 10] Compiling HRich.Text       ( src/HRich/Text.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Text.dyn_o ) [Flags changed]
+[ 9 of 10] Compiling HRich.Table      ( src/HRich/Table.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Table.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Table.dyn_o )
+src/HRich/Table.hs:34:9: error: [GHC-39999]
+    • Ambiguous type variable ‘a0’ arising from a use of ‘Table’
+      prevents the constraint ‘(Renderable a0)’ from being solved.
+      Probable fix: use a type annotation to specify what ‘a0’ should be.
+      Potentially matching instances:
+        instance Renderable Table -- Defined at src/HRich/Table.hs:45:10
+        instance Renderable HRichText -- Defined at src/HRich/Text.hs:34:10
+    • In the expression: Table [] [] rounded emptyStyle Nothing True
+      In an equation for ‘table’:
+          table = Table [] [] rounded emptyStyle Nothing True
+   |
+34 | table = Table [] [] rounded emptyStyle Nothing True
+   |         ^^^^^
+
+src/HRich/Table.hs:43:26: error: [GHC-25897]
+    • Couldn't match type ‘a1’ with ‘a’
+      Expected: [a1]
+        Actual: [a]
+      ‘a1’ is a rigid type variable bound by
+        a pattern with constructor:
+          Table :: forall a.
+                   Renderable a =>
+                   [TableColumn]
+                   -> [[a]] -> Box -> Style -> Maybe Int -> Bool -> Table,
+        in an equation for ‘addRow’
+        at src/HRich/Table.hs:42:13-49
+      ‘a’ is a rigid type variable bound by
+        the type signature for:
+          addRow :: forall a. Renderable a => [a] -> Table -> Table
+        at src/HRich/Table.hs:41:1-47
+    • In the expression: row
+      In the second argument of ‘(++)’, namely ‘[row]’
+      In the second argument of ‘Table’, namely ‘(rows ++ [row])’
+    • Relevant bindings include
+        rows :: [[a1]] (bound at src/HRich/Table.hs:42:24)
+        row :: [a] (bound at src/HRich/Table.hs:42:8)
+        addRow :: [a] -> Table -> Table (bound at src/HRich/Table.hs:42:1)
+   |
+43 |     Table cols (rows ++ [row]) box' style' width' sh
+   |                          ^^^
+
+[10 of 10] Compiling HRich.Console    ( src/HRich/Console.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.dyn_o ) [Flags changed]
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

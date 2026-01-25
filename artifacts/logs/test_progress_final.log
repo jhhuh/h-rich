@@ -1,0 +1,34 @@
+Resolving dependencies...
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - hsc2hs-0.68.10 (exe:hsc2hs) (requires build)
+ - terminal-size-0.3.4 (lib) (requires build)
+ - h-rich-0.1.0.0 (lib) (configuration changed)
+ - h-rich-0.1.0.0 (test:h-rich-test) (configuration changed)
+Starting     hsc2hs-0.68.10 (exe:hsc2hs)
+Building     hsc2hs-0.68.10 (exe:hsc2hs)
+Installing   hsc2hs-0.68.10 (exe:hsc2hs)
+Completed    hsc2hs-0.68.10 (exe:hsc2hs)
+Starting     terminal-size-0.3.4 (lib)
+Building     terminal-size-0.3.4 (lib)
+Installing   terminal-size-0.3.4 (lib)
+Completed    terminal-size-0.3.4 (lib)
+Configuring library for h-rich-0.1.0.0...
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[ 7 of 11] Compiling HRich.Progress   ( src/HRich/Progress.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Progress.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Progress.dyn_o )
+[11 of 11] Compiling HRich.Console    ( src/HRich/Console.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.dyn_o ) [Source file changed]
+src/HRich/Console.hs:32:26: error: [GHC-83865]
+    • Couldn't match expected type ‘Window Int -> Int’
+                  with actual type ‘Int’
+    • In the second argument of ‘maybe’, namely ‘width’
+      In the expression: maybe 80 width (s :: Maybe (Window Int))
+      In an equation for ‘width’:
+          width = maybe 80 width (s :: Maybe (Window Int))
+   |
+32 |     let width = maybe 80 width (s :: Maybe (Window Int))
+   |                          ^^^^^
+
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

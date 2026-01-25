@@ -4,9 +4,11 @@ module Main where
 import qualified HRich.Console as Console
 import qualified HRich.Panel as Panel
 import qualified HRich.Columns as Columns
+import qualified HRich.Table as Table
+import qualified HRich.Progress as Progress
 import qualified HRich.Text as Text
 import qualified Prelude as P
-import Prelude (IO)
+import Prelude (IO, ($), (.), id)
 
 main :: IO ()
 main = do
@@ -50,5 +52,18 @@ main = do
             , Panel.panel (Text.fromMarkup "Col 3\n[blue]Rich[/blue]")
             ]
     Console.print console (Panel.panel finalContent)
+
+    -- Test Table
+    let table' = Table.addRow ["HLS", "[red]Crashed[/red]"]
+               . Table.addRow ["Cabal", "[yellow]Building[/yellow]"]
+               . Table.addRow ["GHC", "[green]Running[/green]"]
+               . Table.addColumn "Status"
+               . Table.addColumn "Name"
+               $ Table.table
+    Console.print console table'
+
+    -- Test Progress
+    let progress = (Progress.progressBar 45 100) { Progress.progressLabel = P.Just "Downloading..." }
+    Console.print console progress
 
     P.putStrLn "Test complete."

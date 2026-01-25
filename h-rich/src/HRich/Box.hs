@@ -7,25 +7,30 @@ module HRich.Box
 import Data.Text (Text)
 
 data Box = Box
-    { top_left      :: Text
-    , top           :: Text
-    , top_right     :: Text
-    , mid_left      :: Text
-    , mid           :: Text
-    , mid_right     :: Text
-    , bottom_left   :: Text
-    , bottom        :: Text
-    , bottom_right  :: Text
+    { boxTopLeft        :: Text
+    , boxTop            :: Text
+    , boxTopDivider     :: Text
+    , boxTopRight       :: Text
+    , boxMidLeft        :: Text
+    , boxMid            :: Text
+    , boxMidDivider     :: Text
+    , boxMidRight       :: Text
+    , boxBottomLeft     :: Text
+    , boxBottom         :: Text
+    , boxBottomDivider  :: Text
+    , boxBottomRight    :: Text
+    , boxVertical       :: Text
+    , boxVerticalDivider :: Text
     } deriving (Show, Eq)
 
 square :: Box
-square = Box "┌" "─" "┐" "│" " " "│" "└" "─" "┘"
+square = Box "┌" "─" "┬" "┐" "├" "─" "┼" "┤" "└" "─" "┴" "┘" "│" "│"
 
 rounded :: Box
-rounded = Box "╭" "─" "╮" "│" " " "│" "╰" "─" "╯"
+rounded = Box "╭" "─" "┬" "╮" "├" "─" "┼" "┤" "╰" "─" "┴" "╯" "│" "│"
 
 heavy :: Box
-heavy = Box "┏" "━" "┓" "┃" " " "┃" "┗" "━" "┛"
+heavy = Box "┏" "━" "┳" "┓" "┣" "━" "╋" "┫" "┗" "━" "┻" "┛" "┃" "┃"
 
 double :: Box
-double = Box "╔" "═" "╗" "║" " " "║" "╚" "═" "╝"
+double = Box "╔" "═" "╦" "╗" "╠" "═" "╬" "╣" "╚" "═" "╩" "╝" "║" "║"

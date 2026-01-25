@@ -68,6 +68,8 @@ library
                     , HRich.Renderable
                     , HRich.Panel
                     , HRich.Columns
+                    , HRich.Table
+                    , HRich.Progress
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -80,6 +82,7 @@ library
                     , text
                     , containers
                     , megaparsec
+                    , terminal-size
 
     -- Directories containing source files.
     hs-source-dirs:   src

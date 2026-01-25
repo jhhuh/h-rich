@@ -1,0 +1,33 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (file src/HRich/Console.hs changed)
+ - h-rich-0.1.0.0 (test:h-rich-test) (configuration changed)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[11 of 11] Compiling HRich.Console    ( src/HRich/Console.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Console.dyn_o ) [Source file changed]
+src/HRich/Console.hs:32:10: error: [GHC-83865]
+    • Couldn't match expected type: Window a1 -> IO a0
+                  with actual type: IO (Maybe (Window n0))
+    • The function ‘size’ is applied to one visible argument,
+        but its type ‘Integral n => IO (Maybe (Window n))’ has none
+      In a stmt of a 'do' block: s <- size (Window 0 0)
+      In the expression:
+        do s <- size (Window 0 0)
+           s' <- size :: IO (Maybe (Window Int))
+           let consoleW = maybe 80 TS.width s'
+               options = ConsoleOptions consoleW Nothing
+               ....
+           mapM_
+             (\ line
+                -> do mapM_
+                        (TIO.hPutStr (consoleHandle console) . renderSegment) line
+                      ....)
+             lines'
+           ....
+   |
+32 |     s <- size (TS.Window 0 0) -- Pass dummy window if needed by some versions, but 'size' usually is IO (Maybe (Window Int))
+   |          ^^^^^^^^^^^^^^^^^^^^
+
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by test:h-rich-test from h-rich-0.1.0.0).
+

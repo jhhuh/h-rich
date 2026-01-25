@@ -31,6 +31,9 @@ Bring the functionality of the `rich` Python library to Haskell, using a pure Ha
 13. [x] Implement line wrapping (soft/hard) for `HRichText`.
 14. [x] Improve `Panel` to support multi-line content and alignment.
 15. [x] Implement `Columns` or `Layout` system.
+16. [ ] Implement `Table` component with column alignment and borders.
+17. [ ] Implement `Progress` bar for tracking tasks.
+18. [ ] Implement automatic terminal width detection.
 
 ## Verification
 - Run `cabal run h-rich-test` and inspect terminal output.

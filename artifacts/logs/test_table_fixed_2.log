@@ -1,0 +1,67 @@
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (cannot read state cache)
+ - h-rich-0.1.0.0 (test:h-rich-test) (cannot read state cache)
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[ 9 of 10] Compiling HRich.Table      ( src/HRich/Table.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Table.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Table.dyn_o )
+Configuring test suite 'h-rich-test' for h-rich-0.1.0.0...
+Preprocessing test suite 'h-rich-test' for h-rich-0.1.0.0...
+Building test suite 'h-rich-test' for h-rich-0.1.0.0...
+[1 of 1] Compiling Main             ( test/Main.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/t/h-rich-test/build/h-rich-test/h-rich-test-tmp/Main.o ) [Source file changed]
+test/Main.hs:56:61: error: [GHC-88464]
+    Variable not in scope:
+      ($)
+        :: (Table.Table -> Table.Table)
+           -> (Table.Table -> Table.Table) -> t0
+    Suggested fixes:
+      • Perhaps use ‘P.$’ (imported from Prelude)
+      • Add ‘$’ to the import list in the import of ‘Prelude’
+        (at test/Main.hs:10:1-19).
+   |
+56 |     let table' = Table.addRow ["HLS", "[red]Crashed[/red]"] $
+   |                                                             ^
+
+test/Main.hs:57:70: error: [GHC-88464]
+    Variable not in scope:
+      ($) :: t0 -> (Table.Table -> Table.Table) -> t1
+    Suggested fixes:
+      • Perhaps use ‘P.$’ (imported from Prelude)
+      • Add ‘$’ to the import list in the import of ‘Prelude’
+        (at test/Main.hs:10:1-19).
+   |
+57 |                  Table.addRow ["Cabal", "[yellow]Building[/yellow]"] $
+   |                                                                      ^
+
+test/Main.hs:58:65: error: [GHC-88464]
+    Variable not in scope:
+      ($) :: t1 -> (Table.Table -> Table.Table) -> t2
+    Suggested fixes:
+      • Perhaps use ‘P.$’ (imported from Prelude)
+      • Add ‘$’ to the import list in the import of ‘Prelude’
+        (at test/Main.hs:10:1-19).
+   |
+58 |                  Table.addRow ["GHC", "[green]Running[/green]"] $
+   |                                                                 ^
+
+test/Main.hs:59:43: error: [GHC-88464]
+    Variable not in scope:
+      ($) :: t2 -> (Table.Table -> Table.Table) -> t3
+    Suggested fixes:
+      • Perhaps use ‘P.$’ (imported from Prelude)
+      • Add ‘$’ to the import list in the import of ‘Prelude’
+        (at test/Main.hs:10:1-19).
+   |
+59 |                  Table.addColumn "Status" $
+   |                                           ^
+
+test/Main.hs:60:41: error: [GHC-88464]
+    Variable not in scope: ($) :: t3 -> Table.Table -> t
+    Suggested fixes:
+      • Perhaps use ‘P.$’ (imported from Prelude)
+      • Add ‘$’ to the import list in the import of ‘Prelude’
+        (at test/Main.hs:10:1-19).
+   |
+60 |                  Table.addColumn "Name" $
+   |                                         ^
+

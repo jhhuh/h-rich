@@ -14,6 +14,9 @@ import System.IO (Handle, stdout, hFlush, hIsTerminalDevice)
 import Data.Text (Text)
 import qualified Data.Text.IO as TIO
 
+import System.Console.Terminal.Size (size, Window(..))
+import qualified System.Console.Terminal.Size as TS
+
 data Console = Console
     { consoleHandle :: Handle
     , isTerminal    :: Bool
@@ -26,7 +29,9 @@ defaultConsole = do
 
 print :: Renderable a => Console -> a -> IO ()
 print console r = do
-    let options = ConsoleOptions 80 Nothing -- TODO: Dynamic width
+    s <- size :: IO (Maybe (Window Int))
+    let consoleW = maybe 80 TS.width s
+        options = ConsoleOptions consoleW Nothing
         lines' = renderLines options r
     mapM_ (\line -> do
         mapM_ (TIO.hPutStr (consoleHandle console) . renderSegment) line
