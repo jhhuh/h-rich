@@ -1,0 +1,26 @@
+Resolving dependencies...
+Build profile: -w ghc-9.10.3 -O1
+In order, the following will be built (use -v for more details):
+ - h-rich-0.1.0.0 (lib) (configuration changed)
+ - h-rich-0.1.0.0 (exe:h-rich-demo) (configuration changed)
+Configuring library for h-rich-0.1.0.0...
+Preprocessing library for h-rich-0.1.0.0...
+Building library for h-rich-0.1.0.0...
+[16 of 18] Compiling HRich.Log        ( src/HRich/Log.hs, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Log.o, /home/jhhuh/Sync/proj/h-rich/h-rich/dist-newstyle/build/x86_64-linux/ghc-9.10.3/h-rich-0.1.0.0/build/HRich/Log.dyn_o )
+src/HRich/Log.hs:118:32: error: [GHC-76037]
+    Not in scope: data constructor ‘HText.Span’
+    NB: no module named ‘HText’ is imported.
+    |
+118 |                              [ HText.Span 0 (T.length timestamp) timeStyle
+    |                                ^^^^^^^^^^
+
+src/HRich/Log.hs:119:32: error: [GHC-76037]
+    Not in scope: data constructor ‘HText.Span’
+    NB: no module named ‘HText’ is imported.
+    |
+119 |                              , HText.Span (T.length timestamp + 1) (T.length timestamp + 1 + T.length levelText) style
+    |                                ^^^^^^^^^^
+
+Error: [Cabal-7125]
+Failed to build h-rich-0.1.0.0 (which is required by exe:h-rich-demo from h-rich-0.1.0.0).
+

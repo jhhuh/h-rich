@@ -9,6 +9,9 @@ import qualified HRich.Progress as Progress
 import qualified HRich.Tree as Tree
 import qualified HRich.Syntax as Syntax
 import qualified HRich.Markdown as Markdown
+import qualified HRich.Log as Log
+import qualified HRich.Traceback as Traceback
+import qualified HRich.Theme as Theme
 import qualified HRich.Text as Text
 import qualified HRich.Segment as Segment
 import qualified Prelude as P
@@ -63,6 +66,11 @@ main = do
     -- Markdown Demo
     let mdSource = "# Markdown Support\n\nThis is a *paragraph* with [bold]rich text[/bold].\n\n- Item 1\n- Item 2\n\n```\ncode block\n```"
     let mdView = Panel.panel (Markdown.renderMarkdown mdSource)
+    
+    -- Production Features Demo
+    logger <- Log.defaultLogger
+    -- We can't easily capture logger stdout here mixed with our Panel layout demo without redesigning.
+    -- So we'll just print logs at the end.
 
     Console.print console header
     Console.print console intro
@@ -76,3 +84,12 @@ main = do
     Console.printMarkup console "\n[bold]Markdown Rendering:[/bold]"
     Console.print console mdView
     Console.print console (Panel.panel progress)
+    
+    Console.printMarkup console "\n[bold]Structured Logging:[/bold]"
+    Log.info logger "This is an info message"
+    Log.warn logger "This is a warning"
+    Log.error logger "This is an error with [bold]rich text[/bold] support"
+    
+    Console.printMarkup console "\n[bold]Traceback Rendering (Simulated):[/bold]"
+    Traceback.withTraceback $ do
+        P.error "Simulating a critical failure for demo purposes!"

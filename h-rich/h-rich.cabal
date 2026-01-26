@@ -74,6 +74,9 @@ library
                     , HRich.Tree
                     , HRich.Syntax
                     , HRich.Markdown
+                    , HRich.Theme
+                    , HRich.Log
+                    , HRich.Traceback
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -87,6 +90,7 @@ library
                     , containers
                     , megaparsec
                     , terminal-size
+                    , time
 
     -- Directories containing source files.
     hs-source-dirs:   src
