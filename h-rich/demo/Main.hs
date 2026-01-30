@@ -6,7 +6,8 @@ import qualified HRich.Panel as Panel
 import qualified HRich.Table as Table
 import qualified HRich.Syntax as Syntax
 import qualified HRich.Text as Text
-import HRich.Segment (Segment(..), renderSegment)
+import qualified HRich.Columns as Columns
+import HRich.Segment (Segment(..))
 import HRich.Style (Style(..), emptyStyle)
 import HRich.Color (Color(..))
 import HRich.Renderable (Renderable(..), ConsoleOptions(..), Indented(..))
@@ -54,14 +55,6 @@ instance Renderable ColorBox where
                 ]
         in [ makeRow y | y <- [0..rows-1] ]
 
--- | Render ColorBox to Text with ANSI codes
-renderColorBoxText :: Int -> T.Text
-renderColorBoxText width =
-    let opts = ConsoleOptions width Nothing
-        lines' = renderLines opts (ColorBox 0)
-        renderLine segs = T.concat (map renderSegment segs)
-    in T.intercalate "\n" (map renderLine lines')
-
 -- | Padding spaces for continuation lines (14 chars to match labels)
 pad :: T.Text
 pad = "              "
@@ -75,14 +68,16 @@ main = do
 
     -- Colors section with spectrum
     Console.printMarkup console "[bold red]Colors[/bold red]\n"
-    TIO.putStrLn $ renderColorBoxText 80
-    Console.printMarkup console "[green]✓[/green] [bold green]4-bit color[/bold green]  [green]✓[/green] [bold blue]8-bit color[/bold blue]  [green]✓[/green] [bold magenta]Truecolor (16.7 million)[/bold magenta]  [green]✓[/green] [bold cyan]Auto convert[/bold cyan]\n\n"
+    Console.print console (Indented 14 (ColorBox 0))
+    Console.printMarkup console (pad `T.append` "[green]✓[/green] [bold green]4-bit color[/bold green]  [green]✓[/green] [bold blue]8-bit color[/bold blue]  [green]✓[/green] [bold magenta]Truecolor (16.7 million)[/bold magenta]  [green]✓[/green] [bold cyan]Auto convert[/bold cyan]\n\n")
 
     -- Styles (removed blink from demo to prevent animation in screenshot)
     Console.printMarkup console "[bold red]Styles[/bold red]        All ANSI styles: [bold]bold[/bold], [dim]dim[/dim], [italic]italic[/italic], [underline]underline[/underline], [strike]strikethrough[/strike], [reverse]reverse[/reverse], and blink.\n"
 
-    -- Text
-    Console.printMarkup console "[bold red]Text[/bold red]          Word wrap text. Justify [green]left[/green], [yellow]center[/yellow], [blue]right[/blue], or [red]full[/red].\n"
+    -- Text justification demo
+    Console.printMarkup console "[bold red]Text[/bold red]\n"
+    Console.print console (Indented 14 makeJustifyDemo)
+    TIO.putStrLn ""
 
     -- Markup
     Console.printMarkup console "[bold red]Markup[/bold red]        [bold magenta]Rich[/bold magenta] supports a simple [italic]bbcode[/italic]-like [bold]markup[/bold] for [yellow]color[/yellow], [underline]style[/underline], and more!\n"
@@ -120,7 +115,12 @@ main = do
     Console.printMarkup console (pad `T.append` "    └── [magenta]Main.hs[/magenta]\n\n")
 
     -- Progress
-    Console.printMarkup console "[bold red]Progress[/bold red]      Installing... \\[[green]━━━━━━━━━━━━━━━━━━━━━━━━━[/green][dim]━━━━━━━━━━[/dim]\\] 75%\n"
+    Console.printMarkup console "[bold red]Progress[/bold red]      Installing... \\[[green]━━━━━━━━━━━━━━━━━━━━━━━━━[/green][dim]━━━━━━━━━━[/dim]\\] 75%\n\n"
+
+    -- Columns
+    Console.printMarkup console "[bold red]Columns[/bold red]\n"
+    Console.print console (Indented 14 makeColumnsDemo)
+    TIO.putStrLn ""
 
     -- +more
     Console.printMarkup console "[bold red]+more![/bold red]        Columns, panels, logging, tracebacks, themes, prompts, and more...\n\n"
@@ -168,3 +168,63 @@ makeSyntaxDemo =
         { Syntax.syntaxLineNumbers = True
         , Syntax.syntaxIndentGuides = True
         }
+
+-- | Create the columns demo with side-by-side panels
+makeColumnsDemo :: Columns.Columns
+makeColumnsDemo =
+    let panel1 = Panel.Panel
+            { Panel.panelRenderable = Text.fromMarkup "[bold cyan]Left[/bold cyan]\nContent flows\nvertically"
+            , Panel.panelTitle = Just "Panel 1"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 100 200 255) }
+            , Panel.panelExpand = True
+            }
+        panel2 = Panel.Panel
+            { Panel.panelRenderable = Text.fromMarkup "[bold yellow]Center[/bold yellow]\nMultiple panels\nside by side"
+            , Panel.panelTitle = Just "Panel 2"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 255 200 100) }
+            , Panel.panelExpand = True
+            }
+        panel3 = Panel.Panel
+            { Panel.panelRenderable = Text.fromMarkup "[bold green]Right[/bold green]\nAuto-sized\ncolumns"
+            , Panel.panelTitle = Just "Panel 3"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 100 255 150) }
+            , Panel.panelExpand = True
+            }
+    in Columns.columns [panel1, panel2, panel3]
+
+-- | Create the text justification demo
+makeJustifyDemo :: Columns.Columns
+makeJustifyDemo =
+    let sampleText = "Word wrap and justify text."
+        leftText = Panel.Panel
+            { Panel.panelRenderable = Text.leftJustify (Text.fromMarkup sampleText)
+            , Panel.panelTitle = Just "left"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 0 200 0) }
+            , Panel.panelExpand = True
+            }
+        centerText = Panel.Panel
+            { Panel.panelRenderable = Text.centerJustify (Text.fromMarkup sampleText)
+            , Panel.panelTitle = Just "center"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 255 200 0) }
+            , Panel.panelExpand = True
+            }
+        rightText = Panel.Panel
+            { Panel.panelRenderable = Text.rightJustify (Text.fromMarkup sampleText)
+            , Panel.panelTitle = Just "right"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 100 150 255) }
+            , Panel.panelExpand = True
+            }
+        fullText = Panel.Panel
+            { Panel.panelRenderable = Text.fullJustify (Text.fromMarkup sampleText)
+            , Panel.panelTitle = Just "full"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 255 100 100) }
+            , Panel.panelExpand = True
+            }
+    in Columns.columns [leftText, centerText, rightText, fullText]
