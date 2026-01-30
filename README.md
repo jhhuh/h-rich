@@ -2,7 +2,7 @@
 
 A Haskell port of Python's [Rich](https://github.com/Textualize/rich) library for beautiful terminal output.
 
-![Demo](assets/demo.svg)
+![Demo](assets/demo.png)
 
 ## AI Agent Experiment
 
