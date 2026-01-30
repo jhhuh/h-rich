@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ExistentialQuantification #-}
 module Main where
 
 import qualified HRich.Console as Console
@@ -7,13 +6,13 @@ import qualified HRich.Panel as Panel
 import qualified HRich.Table as Table
 import qualified HRich.Syntax as Syntax
 import qualified HRich.Text as Text
-import HRich.Text (HRichText)
-import HRich.Segment (Segment(..))
+import HRich.Segment (Segment(..), renderSegment)
 import HRich.Style (Style(..), emptyStyle)
 import HRich.Color (Color(..))
 import HRich.Renderable (Renderable(..), ConsoleOptions(..))
-import HRich.Box (rounded)
+import HRich.Box (rounded, heavy)
 import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 import Data.Word (Word8)
 
 -- | Color spectrum box using HSL to RGB conversion
@@ -55,22 +54,76 @@ instance Renderable ColorBox where
                 ]
         in [ makeRow y | y <- [0..rows-1] ]
 
--- | Wrapper for any Renderable to use in grid cells
-data AnyRenderable = forall a. Renderable a => AnyRenderable a
+-- | Render ColorBox to Text with ANSI codes
+renderColorBoxText :: Int -> T.Text
+renderColorBoxText width =
+    let opts = ConsoleOptions width Nothing
+        lines' = renderLines opts (ColorBox 0)
+        renderLine segs = T.concat (map renderSegment segs)
+    in T.intercalate "\n" (map renderLine lines')
 
-instance Renderable AnyRenderable where
-    render opts (AnyRenderable r) = render opts r
-    renderLines opts (AnyRenderable r) = renderLines opts r
+-- | Padding spaces for continuation lines (14 chars to match labels)
+pad :: T.Text
+pad = "              "
 
 main :: IO ()
 main = do
     console <- Console.defaultConsole
 
     -- Title
-    Console.printMarkup console "[bold magenta]h-rich[/bold magenta] features\n"
+    Console.printMarkup console "[bold magenta]h-rich[/bold magenta] features\n\n"
 
-    -- Print the feature table
-    Console.print console makeFeatureTable
+    -- Colors section with spectrum
+    Console.printMarkup console "[bold red]Colors[/bold red]\n"
+    TIO.putStrLn $ renderColorBoxText 80
+    Console.printMarkup console "[green]✓[/green] [bold green]4-bit color[/bold green]  [green]✓[/green] [bold blue]8-bit color[/bold blue]  [green]✓[/green] [bold magenta]Truecolor (16.7 million)[/bold magenta]  [green]✓[/green] [bold cyan]Auto convert[/bold cyan]\n\n"
+
+    -- Styles
+    Console.printMarkup console "[bold red]Styles[/bold red]        All ANSI styles: [bold]bold[/bold], [dim]dim[/dim], [italic]italic[/italic], [underline]underline[/underline], [strike]strikethrough[/strike], [reverse]reverse[/reverse], and [blink]blink[/blink].\n"
+
+    -- Text
+    Console.printMarkup console "[bold red]Text[/bold red]          Word wrap text. Justify [green]left[/green], [yellow]center[/yellow], [blue]right[/blue], or [red]full[/red].\n"
+
+    -- Markup
+    Console.printMarkup console "[bold red]Markup[/bold red]        [bold magenta]Rich[/bold magenta] supports a simple [italic]bbcode[/italic]-like [bold]markup[/bold] for [yellow]color[/yellow], [underline]style[/underline], and more!\n"
+
+    -- CJK/Emoji
+    Console.printMarkup console "[bold red]CJK/Emoji[/bold red]     [bold cyan]中文[/bold cyan] [bold green]日本語[/bold green] [bold yellow]한국어[/bold yellow] properly aligned!\n"
+    Console.printMarkup console (pad `T.append` "Wide chars: 你好世界 | Emoji: ✓ ✗ ★ ♥ ● ■\n\n")
+
+    -- Tables - use a real table with borders
+    Console.printMarkup console "[bold red]Tables[/bold red]\n"
+    Console.print console makeStarWarsTable
+    TIO.putStrLn ""
+
+    -- Syntax highlighting - print the Syntax component directly
+    Console.printMarkup console "[bold red]Syntax[/bold red]        [dim]Python code with syntax highlighting:[/dim]\n"
+    Console.printMarkup console "[bold red]highlighting[/bold red]\n"
+    Console.print console makeSyntaxDemo
+    TIO.putStrLn ""
+
+    -- Markdown
+    Console.printMarkup console "[bold red]Markdown[/bold red]      [dim]# Markdown[/dim]\n"
+    Console.printMarkup console (pad `T.append` "Supports *markdown* syntax!\n")
+    Console.printMarkup console (pad `T.append` "- Headers\n")
+    Console.printMarkup console (pad `T.append` "- Basic formatting: [bold]bold[/bold], [italic]italic[/italic], [cyan]`code`[/cyan]\n")
+    Console.printMarkup console (pad `T.append` "- Block quotes\n")
+    Console.printMarkup console (pad `T.append` "- Lists, and more...\n\n")
+
+    -- Tree
+    Console.printMarkup console "[bold red]Tree[/bold red]          [bold cyan]src[/bold cyan]\n"
+    Console.printMarkup console (pad `T.append` "├── [yellow]HRich[/yellow]\n")
+    Console.printMarkup console (pad `T.append` "│   ├── Console.hs\n")
+    Console.printMarkup console (pad `T.append` "│   ├── Text.hs\n")
+    Console.printMarkup console (pad `T.append` "│   └── [green]Style.hs[/green]\n")
+    Console.printMarkup console (pad `T.append` "└── [yellow]demo[/yellow]\n")
+    Console.printMarkup console (pad `T.append` "    └── [magenta]Main.hs[/magenta]\n\n")
+
+    -- Progress
+    Console.printMarkup console "[bold red]Progress[/bold red]      Installing... \\[[green]━━━━━━━━━━━━━━━━━━━━━━━━━[/green][dim]━━━━━━━━━━[/dim]\\] 75%\n"
+
+    -- +more
+    Console.printMarkup console "[bold red]+more![/bold red]        Columns, panels, logging, tracebacks, themes, prompts, and more...\n\n"
 
     -- Closing panel
     let closingPanel = Panel.Panel
@@ -82,66 +135,22 @@ main = do
             }
     Console.print console closingPanel
 
--- | Create the main feature demonstration table
-makeFeatureTable :: Table.Table
-makeFeatureTable =
-    Table.addRichRow [label "+more!", moreDemo]
-    $ Table.addRichRow [label "Progress", progressDemo]
-    $ Table.addRichRow [label "Tree", treeDemo]
-    $ Table.addRichRow [label "Markdown", markdownDemo]
-    $ Table.addRichRow [label "Syntax\nhighlighting", syntaxDemo]
-    $ Table.addRichRow [label "Tables", tablesDemo]
-    $ Table.addRichRow [label "CJK/Emoji", cjkDemo]
-    $ Table.addRichRow [label "Markup", markupDemo]
-    $ Table.addRichRow [label "Text", textDemo]
-    $ Table.addRichRow [label "Styles", stylesDemo]
-    $ Table.addRichRow [label "Colors", colorsDemo]
-    $ Table.grid { Table.tablePadding = 2, Table.tableRatios = [1, 5] }
-  where
-    label :: T.Text -> HRichText
-    label t = Text.fromMarkup $ "[bold red]" `T.append` t `T.append` "[/bold red]"
+-- | Create the Star Wars movie table with borders
+makeStarWarsTable :: Table.Table
+makeStarWarsTable =
+    Table.addRichRow [Text.fromMarkup "May 19, 1999", Text.fromMarkup "Star Wars Ep. [bold]I[/bold]: Phantom Menace", Text.fromMarkup "$115,000,000", Text.fromMarkup "$1,027,044,677"]
+    $ Table.addRichRow [Text.fromMarkup "Dec 15, 2017", Text.fromMarkup "Star Wars Ep. VIII: Last Jedi", Text.fromMarkup "$262,000,000", Text.fromMarkup "[bold cyan]$1,332,539,889[/bold cyan]"]
+    $ Table.addRichRow [Text.fromMarkup "May 25, 2018", Text.fromMarkup "[bold]Solo[/bold]: A Star Wars Story", Text.fromMarkup "$275,000,000", Text.fromMarkup "$393,151,347"]
+    $ Table.addRichRow [Text.fromMarkup "Dec 20, 2019", Text.fromMarkup "Star Wars: Rise of Skywalker", Text.fromMarkup "$275,000,000", Text.fromMarkup "[bold]$375,126,118[/bold]"]
+    $ Table.addColumn "Box Office"
+    $ Table.addColumn "Budget"
+    $ Table.addColumn "Title"
+    $ Table.addColumn "Date"
+    $ Table.table { Table.tableBox = heavy, Table.tableStyle = emptyStyle { color = Just (RGB 100 150 255) } }
 
--- | Colors demonstration with checkmarks
-colorsDemo :: HRichText
-colorsDemo = Text.fromMarkup $
-    "[green]✓[/green] [bold green]4-bit color[/bold green]\n" `T.append`
-    "[green]✓[/green] [bold blue]8-bit color[/bold blue]\n" `T.append`
-    "[green]✓[/green] [bold magenta]Truecolor (16.7 million)[/bold magenta]\n" `T.append`
-    "[green]✓[/green] [bold cyan]Automatic color conversion[/bold cyan]"
-
--- | Styles demonstration
-stylesDemo :: HRichText
-stylesDemo = Text.fromMarkup
-    "All ANSI styles: [bold]bold[/bold], [dim]dim[/dim], [italic]italic[/italic], [underline]underline[/underline], [strike]strikethrough[/strike], [reverse]reverse[/reverse], and [blink]blink[/blink]."
-
--- | Text justification demonstration
-textDemo :: HRichText
-textDemo = Text.fromMarkup
-    "Word wrap text. Justify [green]left[/green], [yellow]center[/yellow], [blue]right[/blue], or [red]full[/red]."
-
--- | Markup demonstration
-markupDemo :: HRichText
-markupDemo = Text.fromMarkup
-    "[bold magenta]Rich[/bold magenta] supports a simple [italic]bbcode[/italic]-like [bold]markup[/bold] for [yellow]color[/yellow], [underline]style[/underline], and more!"
-
--- | CJK and Emoji demonstration
-cjkDemo :: HRichText
-cjkDemo = Text.fromMarkup $
-    "[bold cyan]中文[/bold cyan] [bold green]日本語[/bold green] [bold yellow]한국어[/bold yellow] properly aligned!\n" `T.append`
-    "Wide chars: 你好世界 | Emoji: ✓ ✗ ★ ♥ ● ■"
-
--- | Tables demonstration - using markup to show table structure
-tablesDemo :: HRichText
-tablesDemo = Text.fromMarkup $
-    "[green]Date[/green]         [blue]Title[/blue]                            [cyan]Budget[/cyan]        [magenta]Box Office[/magenta]\n" `T.append`
-    "Dec 20, 2019   Star Wars: Rise of Skywalker     $275,000,000  [bold]$375,126,118[/bold]\n" `T.append`
-    "May 25, 2018   [bold]Solo[/bold]: A Star Wars Story         $275,000,000  $393,151,347\n" `T.append`
-    "Dec 15, 2017   Star Wars Ep. VIII: Last Jedi   $262,000,000  [bold cyan]$1,332,539,889[/bold cyan]\n" `T.append`
-    "May 19, 1999   Star Wars Ep. [bold]I[/bold]: Phantom Menace  $115,000,000  $1,027,044,677"
-
--- | Syntax highlighting demonstration using real Syntax component
-syntaxDemo :: HRichText
-syntaxDemo =
+-- | Create the syntax highlighting demo
+makeSyntaxDemo :: Syntax.Syntax
+makeSyntaxDemo =
     let code = T.unlines
             [ "def iter_last(values):"
             , "    \"\"\"Iterate and generate a tuple with a flag for last value.\"\"\""
@@ -155,50 +164,7 @@ syntaxDemo =
             , "        previous_value = value"
             , "    yield True, previous_value"
             ]
-        syn = (Syntax.syntax code "python")
-            { Syntax.syntaxLineNumbers = True
-            , Syntax.syntaxIndentGuides = True
-            }
-        opts = ConsoleOptions 60 Nothing
-        lines' = renderLines opts syn
-    in Text.fromMarkup $ T.intercalate "\n"
-        [ "[dim]Python code with syntax highlighting:[/dim]"
-        , segmentsToMarkup lines'
-        ]
-
--- | Convert rendered segments back to displayable text
-segmentsToMarkup :: [[Segment]] -> T.Text
-segmentsToMarkup lines' = T.intercalate "\n" (map lineToText lines')
-  where
-    lineToText segs = T.concat [segmentText seg | seg <- segs]
-
--- | Markdown demonstration
-markdownDemo :: HRichText
-markdownDemo = Text.fromMarkup $
-    "[dim]# Markdown[/dim]\n" `T.append`
-    "Supports *markdown* syntax!\n" `T.append`
-    "- Headers\n" `T.append`
-    "- Basic formatting: [bold]bold[/bold], [italic]italic[/italic], [cyan]`code`[/cyan]\n" `T.append`
-    "- Block quotes\n" `T.append`
-    "- Lists, and more..."
-
--- | Tree demonstration
-treeDemo :: HRichText
-treeDemo = Text.fromMarkup $
-    "[bold cyan]src[/bold cyan]\n" `T.append`
-    "├── [yellow]HRich[/yellow]\n" `T.append`
-    "│   ├── Console.hs\n" `T.append`
-    "│   ├── Text.hs\n" `T.append`
-    "│   └── [green]Style.hs[/green]\n" `T.append`
-    "└── [yellow]demo[/yellow]\n" `T.append`
-    "    └── [magenta]Main.hs[/magenta]"
-
--- | Progress bar demonstration
-progressDemo :: HRichText
-progressDemo = Text.fromMarkup $
-    "Installing... \\[[green]━━━━━━━━━━━━━━━━━━━━━━━━━[/green][dim]━━━━━━━━━━[/dim]\\] 75%"
-
--- | +more demonstration
-moreDemo :: HRichText
-moreDemo = Text.fromMarkup
-    "Columns, panels, logging, tracebacks, themes, prompts, and more..."
+    in (Syntax.syntax code "python")
+        { Syntax.syntaxLineNumbers = True
+        , Syntax.syntaxIndentGuides = True
+        }
