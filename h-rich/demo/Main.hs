@@ -9,7 +9,7 @@ import qualified HRich.Text as Text
 import HRich.Segment (Segment(..), renderSegment)
 import HRich.Style (Style(..), emptyStyle)
 import HRich.Color (Color(..))
-import HRich.Renderable (Renderable(..), ConsoleOptions(..))
+import HRich.Renderable (Renderable(..), ConsoleOptions(..), Indented(..))
 import HRich.Box (rounded, heavy)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
@@ -78,8 +78,8 @@ main = do
     TIO.putStrLn $ renderColorBoxText 80
     Console.printMarkup console "[green]✓[/green] [bold green]4-bit color[/bold green]  [green]✓[/green] [bold blue]8-bit color[/bold blue]  [green]✓[/green] [bold magenta]Truecolor (16.7 million)[/bold magenta]  [green]✓[/green] [bold cyan]Auto convert[/bold cyan]\n\n"
 
-    -- Styles
-    Console.printMarkup console "[bold red]Styles[/bold red]        All ANSI styles: [bold]bold[/bold], [dim]dim[/dim], [italic]italic[/italic], [underline]underline[/underline], [strike]strikethrough[/strike], [reverse]reverse[/reverse], and [blink]blink[/blink].\n"
+    -- Styles (removed blink from demo to prevent animation in screenshot)
+    Console.printMarkup console "[bold red]Styles[/bold red]        All ANSI styles: [bold]bold[/bold], [dim]dim[/dim], [italic]italic[/italic], [underline]underline[/underline], [strike]strikethrough[/strike], [reverse]reverse[/reverse], and blink.\n"
 
     -- Text
     Console.printMarkup console "[bold red]Text[/bold red]          Word wrap text. Justify [green]left[/green], [yellow]center[/yellow], [blue]right[/blue], or [red]full[/red].\n"
@@ -91,15 +91,15 @@ main = do
     Console.printMarkup console "[bold red]CJK/Emoji[/bold red]     [bold cyan]中文[/bold cyan] [bold green]日本語[/bold green] [bold yellow]한국어[/bold yellow] properly aligned!\n"
     Console.printMarkup console (pad `T.append` "Wide chars: 你好世界 | Emoji: ✓ ✗ ★ ♥ ● ■\n\n")
 
-    -- Tables - use a real table with borders
+    -- Tables - use a real table with borders (indented to align with content)
     Console.printMarkup console "[bold red]Tables[/bold red]\n"
-    Console.print console makeStarWarsTable
+    Console.print console (Indented 14 makeStarWarsTable)
     TIO.putStrLn ""
 
-    -- Syntax highlighting - print the Syntax component directly
+    -- Syntax highlighting - print the Syntax component directly (indented)
     Console.printMarkup console "[bold red]Syntax[/bold red]        [dim]Python code with syntax highlighting:[/dim]\n"
     Console.printMarkup console "[bold red]highlighting[/bold red]\n"
-    Console.print console makeSyntaxDemo
+    Console.print console (Indented 14 makeSyntaxDemo)
     TIO.putStrLn ""
 
     -- Markdown

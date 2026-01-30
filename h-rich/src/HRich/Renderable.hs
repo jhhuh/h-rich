@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-|
 Module      : HRich.Renderable
 Description : Typeclass for renderable terminal components.
@@ -12,6 +13,8 @@ module HRich.Renderable
     ( -- * Core Typeclass
       Renderable(..)
     , ConsoleOptions(..)
+      -- * Higher-order wrappers
+    , Indented(..)
     ) where
 
 import HRich.Segment
@@ -32,10 +35,31 @@ class Renderable a where
     render :: ConsoleOptions -> a -> [Segment]
     renderLines :: ConsoleOptions -> a -> [[Segment]]
     renderLines opts a = splitLines (render opts a)
-    
+
     measure :: ConsoleOptions -> a -> Measurement
     -- Default measurement: render and find max line length
     measure opts a =
         let lines' = renderLines opts a
             maxWidth = maximum (0 : map (sum . map (textWidth . segmentText)) lines')
         in Measurement maxWidth maxWidth
+
+-- | Wrapper to add left indentation to any Renderable.
+-- Usage: @Indented 4 myTable@ adds 4 spaces of indentation.
+data Indented a = Indented Int a
+    deriving (Show, Eq)
+
+instance Renderable a => Renderable (Indented a) where
+    render opts (Indented indent inner) = concat (renderLines opts (Indented indent inner))
+
+    renderLines opts (Indented indent inner) =
+        let indentSeg = Segment (T.replicate indent " ") Nothing
+            -- Adjust width to account for indent
+            innerOpts = opts { consoleWidth = consoleWidth opts - indent }
+            innerLines = renderLines innerOpts inner
+        in map (indentSeg :) innerLines
+
+    measure opts (Indented indent inner) =
+        let innerMeasure = measure opts inner
+        in innerMeasure { minimumWidth = minimumWidth innerMeasure + indent
+                        , maximumWidth = maximumWidth innerMeasure + indent
+                        }
