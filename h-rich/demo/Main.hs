@@ -65,7 +65,8 @@ main = do
     console <- Console.defaultConsole
 
     -- Title
-    Console.printMarkup console "[bold magenta]h-rich[/bold magenta] features\n\n"
+    Console.print console (Text.centerJustify (Text.fromMarkup "[bold magenta]h-rich[/bold magenta] features"))
+    TIO.putStrLn "\n"
 
     -- Colors section with spectrum
     Console.printMarkup console "[bold red]Colors[/bold red]\n"
