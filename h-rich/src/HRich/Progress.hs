@@ -20,6 +20,7 @@ import HRich.Renderable
 import HRich.Segment
 import HRich.Style
 import HRich.Color
+import HRich.Width (textWidth)
 import Data.Text (Text)
 import qualified Data.Text as T
 
@@ -41,10 +42,10 @@ instance Renderable Progress where
             percentage = min 1.0 (max 0.0 (progressCurrent p / progressTotal p))
             
             label = maybe "" (`T.append` " ") (progressLabel p)
-            labelLen = T.length label
-            
+            labelLen = textWidth label
+
             percentText = T.pack (show (round (percentage * 100) :: Int)) `T.append` "%"
-            percentLen = T.length percentText
+            percentLen = textWidth percentText
             
             -- "[...]" segments take 4 characters: [, ], space, space
             barWidth = max 0 (width - labelLen - percentLen - 4)

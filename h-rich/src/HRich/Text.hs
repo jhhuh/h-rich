@@ -29,6 +29,7 @@ module HRich.Text
 import HRich.Style
 import HRich.Segment
 import HRich.Renderable
+import HRich.Width (textWidth)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.List (sortOn)
@@ -149,7 +150,7 @@ fullJustify = justified JustifyFull
 -- | Apply justification to a line of segments
 justifyLine :: Int -> Justify -> [Segment] -> [Segment]
 justifyLine width justify segments =
-    let contentLen = sum [T.length (segmentText s) | s <- segments]
+    let contentLen = sum [textWidth (segmentText s) | s <- segments]
         padding = max 0 (width - contentLen)
     in case justify of
         JustifyLeft -> segments ++ [Segment (T.replicate padding " ") Nothing]
@@ -163,7 +164,7 @@ justifyLine width justify segments =
 -- | Distribute spaces evenly between words for full justification
 distributeSpaces :: Int -> [Segment] -> [Segment]
 distributeSpaces width segments =
-    let contentLen = sum [T.length (segmentText s) | s <- segments]
+    let contentLen = sum [textWidth (segmentText s) | s <- segments]
         totalPadding = max 0 (width - contentLen)
         -- Find space segments (word boundaries)
         isSpace seg = T.all (== ' ') (segmentText seg) && not (T.null (segmentText seg))

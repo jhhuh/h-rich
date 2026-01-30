@@ -78,6 +78,7 @@ library
                     , HRich.Log
                     , HRich.Traceback
                     , HRich.Group
+                    , HRich.Width
 
     -- Modules included in this library but not exported.
     -- other-modules:

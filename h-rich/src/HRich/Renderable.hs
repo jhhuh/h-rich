@@ -15,6 +15,7 @@ module HRich.Renderable
     ) where
 
 import HRich.Segment
+import HRich.Width (textWidth)
 import qualified Data.Text as T
 
 data ConsoleOptions = ConsoleOptions
@@ -36,5 +37,5 @@ class Renderable a where
     -- Default measurement: render and find max line length
     measure opts a =
         let lines' = renderLines opts a
-            maxWidth = maximum (0 : map (sum . map (T.length . segmentText)) lines')
+            maxWidth = maximum (0 : map (sum . map (textWidth . segmentText)) lines')
         in Measurement maxWidth maxWidth

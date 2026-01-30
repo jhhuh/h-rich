@@ -20,6 +20,7 @@ import HRich.Renderable
 import HRich.Segment
 import HRich.Box
 import HRich.Style
+import HRich.Width (textWidth)
 import Data.Text (Text)
 import qualified Data.Text as T
 
@@ -49,7 +50,7 @@ instance Renderable Panel where
             
             -- Function to render a single line with borders and padding
             renderPanelLine segments =
-                let contentLen = sum [ T.length (segmentText s) | s <- segments ]
+                let contentLen = sum [ textWidth (segmentText s) | s <- segments ]
                     paddingLen = max 0 (contentWidth - contentLen)
                     paddingSegment = Segment (T.replicate paddingLen " ") Nothing
                 in (Segment (boxVertical box') (Just style') : segments) ++ 

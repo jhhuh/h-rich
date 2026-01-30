@@ -23,6 +23,7 @@ module HRich.Segment
 
 import HRich.Style
 import HRich.Color
+import HRich.Width (textWidth)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.List (intercalate)
@@ -47,10 +48,10 @@ intercalateSegment sep (x:xs) = x ++ (sep : intercalateSegment sep xs)
 
 padToWidth :: Int -> [Segment] -> [Segment]
 padToWidth n segments =
-    let currentLen = sum [ T.length (segmentText s) | s <- segments ]
+    let currentLen = sum [ textWidth (segmentText s) | s <- segments ]
         needed = n - currentLen
-    in if needed <= 0 
-       then segments 
+    in if needed <= 0
+       then segments
        else segments ++ [Segment (T.replicate needed " ") Nothing]
 
 splitLines :: [Segment] -> [[Segment]]
@@ -87,7 +88,7 @@ wrapSegments width segments =
 
     processWords [] _ rest currentWidth currentLine linesAcc = go rest currentWidth currentLine linesAcc
     processWords (w:ws) style rest currentWidth currentLine linesAcc =
-        let wLen = T.length w
+        let wLen = textWidth w
         in if currentWidth + wLen <= width
            then processWords ws style rest (currentWidth + wLen) (Segment w style : currentLine) linesAcc
            else if wLen > width
@@ -98,8 +99,8 @@ wrapSegments width segments =
                     in processWords (after:ws) style rest 0 [] newLinesAcc
                 else -- Wrap to next line
                     let newLinesAcc = if null currentLine then linesAcc else reverse currentLine : linesAcc
-                        trimmedW = if T.isPrefixOf " " w && T.length w > 1 then T.drop 1 w else w
-                    in processWords ws style rest (T.length trimmedW) [Segment trimmedW style] newLinesAcc
+                        trimmedW = if T.isPrefixOf " " w && textWidth w > 1 then T.drop 1 w else w
+                    in processWords ws style rest (textWidth trimmedW) [Segment trimmedW style] newLinesAcc
 
     splitWords t = 
         let pieces = T.groupBy (\a b -> (a == ' ') == (b == ' ')) t
