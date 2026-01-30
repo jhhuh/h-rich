@@ -59,10 +59,5 @@ withTraceback action = do
     console <- Console.defaultConsole
     catch action (\e -> do
         printException console e
-        _ <- error "Program exited due to unhandled exception" -- Re-throw or exit? 
-        -- Usually we want to exit gracefully or re-throw.
-        -- Let's re-throw for now, but after printing.
-        -- Actually, catch catches it, so we need to decide.
-        -- Users might want to suppress the default handler.
         System.Exit.exitFailure
         )
