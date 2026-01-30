@@ -10,13 +10,15 @@ This module defines the 'Table' component, enabling the rendering of data
 in rows and columns with configurable headers, borders, and alignment.
 -}
 module HRich.Table
-    ( -- * Table Constants
+    ( -- * Table Types
       Table(..)
     , TableColumn(..)
       -- * Construction
     , table
+    , grid
     , addColumn
     , addRow
+    , addRichRow
     ) where
 
 import HRich.Renderable
@@ -40,41 +42,82 @@ data Table = Table
     , tableStyle   :: Style
     , tableWidth   :: Maybe Int
     , showHeader   :: Bool
+    , showBorder   :: Bool  -- ^ Whether to show borders
+    , tablePadding :: Int   -- ^ Padding between columns (for grid)
     }
 
+-- | Standard table with borders
 table :: Table
-table = Table [] [] rounded emptyStyle Nothing True
+table = Table [] [] rounded emptyStyle Nothing True True 0
+
+-- | Grid table without borders (for layouts)
+grid :: Table
+grid = Table [] [] rounded emptyStyle Nothing False False 1
 
 addColumn :: T.Text -> Table -> Table
-addColumn header (Table cols rows box' style' width' sh) =
+addColumn header t =
     let newCol = TableColumn (fromMarkup header) Nothing Nothing "left"
-    in Table (cols ++ [newCol]) rows box' style' width' sh
+    in t { tableColumns = tableColumns t ++ [newCol] }
 
 addRow :: [T.Text] -> Table -> Table
-addRow row (Table cols rows box' style' width' sh) =
+addRow row t =
     let richRow = map fromMarkup row
-    in Table cols (rows ++ [richRow]) box' style' width' sh
+    in t { tableRows = tableRows t ++ [richRow] }
+
+-- | Add a row of pre-constructed HRichText values
+addRichRow :: [HRichText] -> Table -> Table
+addRichRow row t = t { tableRows = tableRows t ++ [row] }
 
 instance Renderable Table where
     render options t = concat (renderLines options t)
 
-    renderLines options (Table cols rows' box' style' tWidth _) =
-        let width = maybe (consoleWidth options) id tWidth
-            numCols = length cols
-            totalDividers = numCols - 1
-            availableWidth = width - 2 - totalDividers
-            colWidth = availableWidth `div` max 1 numCols
-            
-            -- Render header
-            headerLines = if null cols then [] else renderTableRow (map columnHeader cols) colWidth box' style' True
-            
-            -- Render rows
-            rowLines = concatMap (\r -> renderTableRow r colWidth box' style' False) rows'
-            
-            -- Bottom border
-            bottomLine = [Segment (boxBottomLeft box' `T.append` T.intercalate (boxBottomDivider box') (replicate numCols (T.replicate colWidth (boxBottom box'))) `T.append` boxBottomRight box') (Just style')]
-            
-        in headerLines ++ rowLines ++ [bottomLine]
+    renderLines options tbl@(Table cols rows' box' style' tWidth _ border padding) =
+        if border
+        then renderBorderedTable options tbl
+        else renderGridTable options tbl
+
+-- | Render a table with borders
+renderBorderedTable :: ConsoleOptions -> Table -> [[Segment]]
+renderBorderedTable options (Table cols rows' box' style' tWidth _ _ _) =
+    let width = maybe (consoleWidth options) id tWidth
+        numCols = length cols
+        totalDividers = numCols - 1
+        availableWidth = width - 2 - totalDividers
+        colWidth = availableWidth `div` max 1 numCols
+
+        -- Render header
+        headerLines = if null cols then [] else renderTableRow (map columnHeader cols) colWidth box' style' True
+
+        -- Render rows
+        rowLines = concatMap (\r -> renderTableRow r colWidth box' style' False) rows'
+
+        -- Bottom border
+        bottomLine = [Segment (boxBottomLeft box' `T.append` T.intercalate (boxBottomDivider box') (replicate numCols (T.replicate colWidth (boxBottom box'))) `T.append` boxBottomRight box') (Just style')]
+
+    in headerLines ++ rowLines ++ [bottomLine]
+
+-- | Render a grid (borderless table)
+renderGridTable :: ConsoleOptions -> Table -> [[Segment]]
+renderGridTable options (Table cols rows' _ _ tWidth _ _ padding) =
+    let width = maybe (consoleWidth options) id tWidth
+        numCols = max (length cols) (if null rows' then 0 else length (head rows'))
+        paddingTotal = padding * (numCols - 1)
+        availableWidth = width - paddingTotal
+        colWidth = availableWidth `div` max 1 numCols
+        colOptions = ConsoleOptions colWidth Nothing
+        paddingSeg = Segment (T.replicate padding " ") Nothing
+
+        renderGridRow :: [HRichText] -> [[Segment]]
+        renderGridRow cells =
+            let allCellLines = map (renderLines colOptions) cells
+                maxLines = maximum (1 : map length allCellLines)
+                paddedCellLines = map (padLinesTable maxLines colWidth) allCellLines
+                joinLine lIdx =
+                    let cellSegs = map (!! lIdx) paddedCellLines
+                    in intercalateSegment paddingSeg cellSegs
+            in map joinLine [0..maxLines-1]
+
+    in concatMap renderGridRow rows'
 
 renderTableRow :: Renderable a => [a] -> Int -> Box -> Style -> Bool -> [[Segment]]
 renderTableRow items colWidth box' style' isHeader =
