@@ -99,7 +99,7 @@ makeFeatureTable =
     $ Table.addRichRow [label "Text", textDemo]
     $ Table.addRichRow [label "Styles", stylesDemo]
     $ Table.addRichRow [label "Colors", colorsDemo]
-    $ Table.grid { Table.tablePadding = 2 }
+    $ Table.grid { Table.tablePadding = 2, Table.tableRatios = [1, 5] }
   where
     label :: T.Text -> HRichText
     label t = Text.fromMarkup $ "[bold red]" `T.append` t `T.append` "[/bold red]"

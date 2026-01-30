@@ -44,15 +44,16 @@ data Table = Table
     , showHeader   :: Bool
     , showBorder   :: Bool  -- ^ Whether to show borders
     , tablePadding :: Int   -- ^ Padding between columns (for grid)
+    , tableRatios  :: [Int] -- ^ Column width ratios (e.g., [1, 4] means 1:4 ratio)
     }
 
 -- | Standard table with borders
 table :: Table
-table = Table [] [] rounded emptyStyle Nothing True True 0
+table = Table [] [] rounded emptyStyle Nothing True True 0 []
 
 -- | Grid table without borders (for layouts)
 grid :: Table
-grid = Table [] [] rounded emptyStyle Nothing False False 1
+grid = Table [] [] rounded emptyStyle Nothing False False 1 []
 
 addColumn :: T.Text -> Table -> Table
 addColumn header t =
@@ -71,14 +72,14 @@ addRichRow row t = t { tableRows = tableRows t ++ [row] }
 instance Renderable Table where
     render options t = concat (renderLines options t)
 
-    renderLines options tbl@(Table cols rows' box' style' tWidth _ border padding) =
+    renderLines options tbl@(Table _ _ _ _ _ _ border _ _) =
         if border
         then renderBorderedTable options tbl
         else renderGridTable options tbl
 
 -- | Render a table with borders
 renderBorderedTable :: ConsoleOptions -> Table -> [[Segment]]
-renderBorderedTable options (Table cols rows' box' style' tWidth _ _ _) =
+renderBorderedTable options (Table cols rows' box' style' tWidth _ _ _ _) =
     let width = maybe (consoleWidth options) id tWidth
         numCols = length cols
         totalDividers = numCols - 1
@@ -98,20 +99,26 @@ renderBorderedTable options (Table cols rows' box' style' tWidth _ _ _) =
 
 -- | Render a grid (borderless table)
 renderGridTable :: ConsoleOptions -> Table -> [[Segment]]
-renderGridTable options (Table cols rows' _ _ tWidth _ _ padding) =
+renderGridTable options (Table cols rows' _ _ tWidth _ _ padding ratios) =
     let width = maybe (consoleWidth options) id tWidth
         numCols = max (length cols) (if null rows' then 0 else length (head rows'))
         paddingTotal = padding * (numCols - 1)
         availableWidth = width - paddingTotal
-        colWidth = availableWidth `div` max 1 numCols
-        colOptions = ConsoleOptions colWidth Nothing
+
+        -- Calculate column widths based on ratios
+        colWidths = if null ratios || length ratios /= numCols
+                    then replicate numCols (availableWidth `div` max 1 numCols)
+                    else let totalRatio = sum ratios
+                         in map (\r -> (r * availableWidth) `div` totalRatio) ratios
+
         paddingSeg = Segment (T.replicate padding " ") Nothing
 
         renderGridRow :: [HRichText] -> [[Segment]]
         renderGridRow cells =
-            let allCellLines = map (renderLines colOptions) cells
+            let cellsWithWidths = zip cells (colWidths ++ repeat (last colWidths))
+                allCellLines = map (\(cell, w) -> renderLines (ConsoleOptions w Nothing) cell) cellsWithWidths
                 maxLines = maximum (1 : map length allCellLines)
-                paddedCellLines = map (padLinesTable maxLines colWidth) allCellLines
+                paddedCellLines = zipWith (\lines' w -> padLinesTable maxLines w lines') allCellLines colWidths
                 joinLine lIdx =
                     let cellSegs = map (!! lIdx) paddedCellLines
                     in intercalateSegment paddingSeg cellSegs
