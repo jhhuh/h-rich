@@ -1,13 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ExistentialQuantification #-}
 module Main where
 
 import qualified HRich.Console as Console
 import qualified HRich.Panel as Panel
 import qualified HRich.Table as Table
-import qualified HRich.Progress as Progress
-import qualified HRich.Tree as Tree
 import qualified HRich.Syntax as Syntax
-import qualified HRich.Markdown as Markdown
 import qualified HRich.Text as Text
 import HRich.Text (HRichText)
 import HRich.Segment (Segment(..))
@@ -18,7 +16,7 @@ import HRich.Box (rounded)
 import qualified Data.Text as T
 import Data.Word (Word8)
 
--- | Generate a color spectrum using HSL to RGB conversion
+-- | Color spectrum box using HSL to RGB conversion
 -- Uses the "▄" character with different fg/bg colors for smooth gradient
 newtype ColorBox = ColorBox Int
 
@@ -57,24 +55,22 @@ instance Renderable ColorBox where
                 ]
         in [ makeRow y | y <- [0..rows-1] ]
 
--- | Create a comparison grid (two items side by side)
-comparison :: HRichText -> HRichText -> Table.Table
-comparison left right =
-    Table.addRichRow [left, right]
-    $ Table.grid
+-- | Wrapper for any Renderable to use in grid cells
+data AnyRenderable = forall a. Renderable a => AnyRenderable a
+
+instance Renderable AnyRenderable where
+    render opts (AnyRenderable r) = render opts r
+    renderLines opts (AnyRenderable r) = renderLines opts r
 
 main :: IO ()
 main = do
     console <- Console.defaultConsole
 
-    -- Main feature table (grid layout like Rich)
-    let featureTable = makeFeatureTable
-
     -- Title
     Console.printMarkup console "[bold magenta]h-rich[/bold magenta] features\n"
 
     -- Print the feature table
-    Console.print console featureTable
+    Console.print console makeFeatureTable
 
     -- Closing panel
     let closingPanel = Panel.Panel
@@ -95,6 +91,7 @@ makeFeatureTable =
     $ Table.addRichRow [label "Markdown", markdownDemo]
     $ Table.addRichRow [label "Syntax\nhighlighting", syntaxDemo]
     $ Table.addRichRow [label "Tables", tablesDemo]
+    $ Table.addRichRow [label "CJK/Emoji", cjkDemo]
     $ Table.addRichRow [label "Markup", markupDemo]
     $ Table.addRichRow [label "Text", textDemo]
     $ Table.addRichRow [label "Styles", stylesDemo]
@@ -104,7 +101,7 @@ makeFeatureTable =
     label :: T.Text -> HRichText
     label t = Text.fromMarkup $ "[bold red]" `T.append` t `T.append` "[/bold red]"
 
--- | Colors demonstration
+-- | Colors demonstration with checkmarks
 colorsDemo :: HRichText
 colorsDemo = Text.fromMarkup $
     "[green]✓[/green] [bold green]4-bit color[/bold green]\n" `T.append`
@@ -127,7 +124,13 @@ markupDemo :: HRichText
 markupDemo = Text.fromMarkup
     "[bold magenta]Rich[/bold magenta] supports a simple [italic]bbcode[/italic]-like [bold]markup[/bold] for [yellow]color[/yellow], [underline]style[/underline], and more!"
 
--- | Tables demonstration (rendered as text since we can't nest tables easily)
+-- | CJK and Emoji demonstration
+cjkDemo :: HRichText
+cjkDemo = Text.fromMarkup $
+    "[bold cyan]中文[/bold cyan] [bold green]日本語[/bold green] [bold yellow]한국어[/bold yellow] properly aligned!\n" `T.append`
+    "Wide chars: 你好世界 | Emoji: ✓ ✗ ★ ♥ ● ■"
+
+-- | Tables demonstration - using markup to show table structure
 tablesDemo :: HRichText
 tablesDemo = Text.fromMarkup $
     "[green]Date[/green]         [blue]Title[/blue]                            [cyan]Budget[/cyan]        [magenta]Box Office[/magenta]\n" `T.append`
@@ -136,14 +139,38 @@ tablesDemo = Text.fromMarkup $
     "Dec 15, 2017   Star Wars Ep. VIII: Last Jedi   $262,000,000  [bold cyan]$1,332,539,889[/bold cyan]\n" `T.append`
     "May 19, 1999   Star Wars Ep. [bold]I[/bold]: Phantom Menace  $115,000,000  $1,027,044,677"
 
--- | Syntax highlighting demonstration
+-- | Syntax highlighting demonstration using real Syntax component
 syntaxDemo :: HRichText
-syntaxDemo = Text.fromMarkup $
-    "[dim]-- Haskell code with syntax highlighting[/dim]\n" `T.append`
-    "[magenta]iterLast[/magenta] :: [blue]Traversable[/blue] t => t a -> t ([blue]Bool[/blue], a)\n" `T.append`
-    "[magenta]iterLast[/magenta] xs = [magenta]snd[/magenta] $ [magenta]mapAccumR[/magenta] step [yellow]True[/yellow] xs\n" `T.append`
-    "  [magenta]where[/magenta]\n" `T.append`
-    "    step isLast x = ([yellow]False[/yellow], (isLast, x))"
+syntaxDemo =
+    let code = T.unlines
+            [ "def iter_last(values):"
+            , "    \"\"\"Iterate and generate a tuple with a flag for last value.\"\"\""
+            , "    iter_values = iter(values)"
+            , "    try:"
+            , "        previous_value = next(iter_values)"
+            , "    except StopIteration:"
+            , "        return"
+            , "    for value in iter_values:"
+            , "        yield False, previous_value"
+            , "        previous_value = value"
+            , "    yield True, previous_value"
+            ]
+        syn = (Syntax.syntax code "python")
+            { Syntax.syntaxLineNumbers = True
+            , Syntax.syntaxIndentGuides = True
+            }
+        opts = ConsoleOptions 60 Nothing
+        lines' = renderLines opts syn
+    in Text.fromMarkup $ T.intercalate "\n"
+        [ "[dim]Python code with syntax highlighting:[/dim]"
+        , segmentsToMarkup lines'
+        ]
+
+-- | Convert rendered segments back to displayable text
+segmentsToMarkup :: [[Segment]] -> T.Text
+segmentsToMarkup lines' = T.intercalate "\n" (map lineToText lines')
+  where
+    lineToText segs = T.concat [segmentText seg | seg <- segs]
 
 -- | Markdown demonstration
 markdownDemo :: HRichText
