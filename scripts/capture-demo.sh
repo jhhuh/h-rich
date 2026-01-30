@@ -27,12 +27,12 @@ for cmd in Xvfb xterm scrot; do
     fi
 done
 
-# Build the demo first
-echo "Building h-rich-demo..."
-cd "${PROJECT_DIR}/h-rich"
-cabal build h-rich-demo 2>&1 | tail -3
-
-DEMO_BIN=$(cabal list-bin h-rich-demo 2>/dev/null)
+# Build with nix
+echo "Building h-rich with nix..."
+cd "${PROJECT_DIR}"
+OUT_PATH=$(nix build --print-out-paths 2>/dev/null)
+DEMO_BIN="${OUT_PATH}/bin/h-rich-demo"
+echo "Binary: ${DEMO_BIN}"
 
 # Start Xvfb
 echo "Starting Xvfb on display :${DISPLAY_NUM}..."
@@ -51,7 +51,7 @@ xterm \
     -bg "#1e1e2e" \
     -fg "#cdd6f4" \
     +sb \
-    -e bash -c "'$DEMO_BIN'; read -p 'Press Enter to close...'" &
+    -e bash -c "'$DEMO_BIN'; sleep 999" &
 TERM_PID=$!
 
 # Wait longer for terminal to fully render
