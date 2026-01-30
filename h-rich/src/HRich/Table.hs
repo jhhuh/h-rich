@@ -87,15 +87,20 @@ renderBorderedTable options (Table cols rows' box' style' tWidth _ _ _ _) =
         colWidth = availableWidth `div` max 1 numCols
 
         -- Render header
-        headerLines = if null cols then [] else renderTableRow (map columnHeader cols) colWidth box' style' True
+        headerLines = if null cols then [] else renderTableRow (map columnHeader cols) colWidth box' style' True False
 
-        -- Render rows
-        rowLines = concatMap (\r -> renderTableRow r colWidth box' style' False) rows'
+        -- Render rows with isFirstBody flag
+        renderRowWithIndex (idx, r) = renderTableRow r colWidth box' style' False (idx == 0)
+        rowLines = concatMap renderRowWithIndex (zip [0..] rows')
 
         -- Bottom border
-        bottomLine = [Segment (boxBottomLeft box' `T.append` T.intercalate (boxBottomDivider box') (replicate numCols (T.replicate colWidth (boxBottom box'))) `T.append` boxBottomRight box') (Just style')]
+        bottomBorderText = boxBottomLeft box' `T.append`
+                          T.intercalate (boxBottomDivider box') (replicate numCols (T.replicate colWidth (boxBottom box'))) `T.append`
+                          boxBottomRight box'
+        bottomLine = [Segment bottomBorderText (Just style')]
+        isBlankBottom = T.all (== ' ') bottomBorderText
 
-    in headerLines ++ rowLines ++ [bottomLine]
+    in headerLines ++ rowLines ++ (if isBlankBottom then [] else [bottomLine])
 
 -- | Render a grid (borderless table)
 renderGridTable :: ConsoleOptions -> Table -> [[Segment]]
@@ -126,30 +131,43 @@ renderGridTable options (Table cols rows' _ _ tWidth _ _ padding ratios) =
 
     in concatMap renderGridRow rows'
 
-renderTableRow :: Renderable a => [a] -> Int -> Box -> Style -> Bool -> [[Segment]]
-renderTableRow items colWidth box' style' isHeader =
+-- | Render a table row with its separator
+-- isHeader: True for header row (uses boxTop* for separator above)
+-- isFirstBody: True for first body row (uses boxHeadRow* for separator - line below header)
+-- Otherwise uses boxRow* for separator between body rows
+renderTableRow :: Renderable a => [a] -> Int -> Box -> Style -> Bool -> Bool -> [[Segment]]
+renderTableRow items colWidth box' style' isHeader isFirstBody =
     let colOptions = ConsoleOptions colWidth Nothing
         allCellLines = map (renderLines colOptions) items
         maxLines = maximum (0 : map length allCellLines)
         paddedCellLines = map (padLinesTable maxLines colWidth) allCellLines
-        
-        -- Top border
-        topBorderText = (if isHeader then boxTopLeft box' else boxMidLeft box') `T.append` 
-                        T.intercalate (if isHeader then boxTopDivider box' else boxMidDivider box') (replicate (length items) (T.replicate colWidth (if isHeader then boxTop box' else boxMid box'))) `T.append` 
-                        (if isHeader then boxTopRight box' else boxMidRight box')
+
+        -- Select border characters based on row type
+        (bLeft, bHoriz, bCross, bRight)
+            | isHeader    = (boxTopLeft box', boxTop box', boxTopDivider box', boxTopRight box')
+            | isFirstBody = (boxHeadRowLeft box', boxHeadRowHorizontal box', boxHeadRowCross box', boxHeadRowRight box')
+            | otherwise   = (boxRowLeft box', boxRowHorizontal box', boxRowCross box', boxRowRight box')
+
+        -- Build separator line
+        topBorderText = bLeft `T.append`
+                        T.intercalate bCross (replicate (length items) (T.replicate colWidth bHoriz)) `T.append`
+                        bRight
         topBorder = [Segment topBorderText (Just style')]
-        
+
+        -- Skip border if it's all whitespace
+        isBlankBorder = T.all (== ' ') topBorderText
+
         joinLines lIdx =
             let cells = map (!! lIdx) paddedCellLines
                 sep = Segment (boxVerticalDivider box') (Just style')
-                line = [Segment (boxVertical box') (Just style')] ++ 
-                       intercalateSegment sep cells ++ 
+                line = [Segment (boxVertical box') (Just style')] ++
+                       intercalateSegment sep cells ++
                        [Segment (boxVertical box') (Just style')]
             in line
-            
+
         contentLines = map joinLines [0..maxLines-1]
-        
-    in topBorder : contentLines
+
+    in if isBlankBorder then contentLines else topBorder : contentLines
 
 
 padLinesTable :: Int -> Int -> [[Segment]] -> [[Segment]]

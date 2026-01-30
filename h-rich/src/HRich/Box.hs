@@ -17,35 +17,90 @@ module HRich.Box
     , rounded
     , heavy
     , double
+    , invisible
+    , horizontalLine
+    , simple
     ) where
 
 import Data.Text (Text)
 
+-- | Box characters following Rich's convention
 data Box = Box
-    { boxTopLeft        :: Text
-    , boxTop            :: Text
-    , boxTopDivider     :: Text
-    , boxTopRight       :: Text
-    , boxMidLeft        :: Text
-    , boxMid            :: Text
-    , boxMidDivider     :: Text
-    , boxMidRight       :: Text
-    , boxBottomLeft     :: Text
-    , boxBottom         :: Text
-    , boxBottomDivider  :: Text
-    , boxBottomRight    :: Text
-    , boxVertical       :: Text
-    , boxVerticalDivider :: Text
+    { boxTopLeft        :: Text  -- ^ Top-left corner
+    , boxTop            :: Text  -- ^ Top edge
+    , boxTopDivider     :: Text  -- ^ Top divider (between columns)
+    , boxTopRight       :: Text  -- ^ Top-right corner
+    , boxHeadRowLeft    :: Text  -- ^ Head row separator left (below header)
+    , boxHeadRowHorizontal :: Text  -- ^ Head row separator horizontal
+    , boxHeadRowCross   :: Text  -- ^ Head row separator cross
+    , boxHeadRowRight   :: Text  -- ^ Head row separator right
+    , boxRowLeft        :: Text  -- ^ Body row separator left (between rows)
+    , boxRowHorizontal  :: Text  -- ^ Body row separator horizontal
+    , boxRowCross       :: Text  -- ^ Body row separator cross
+    , boxRowRight       :: Text  -- ^ Body row separator right
+    , boxBottomLeft     :: Text  -- ^ Bottom-left corner
+    , boxBottom         :: Text  -- ^ Bottom edge
+    , boxBottomDivider  :: Text  -- ^ Bottom divider
+    , boxBottomRight    :: Text  -- ^ Bottom-right corner
+    , boxVertical       :: Text  -- ^ Vertical edge
+    , boxVerticalDivider :: Text -- ^ Vertical divider (between columns)
     } deriving (Show, Eq)
 
 square :: Box
-square = Box "┌" "─" "┬" "┐" "├" "─" "┼" "┤" "└" "─" "┴" "┘" "│" "│"
+square = Box
+    "┌" "─" "┬" "┐"  -- top
+    "├" "─" "┼" "┤"  -- head row (below header)
+    "├" "─" "┼" "┤"  -- row (between body rows)
+    "└" "─" "┴" "┘"  -- bottom
+    "│" "│"          -- vertical
 
 rounded :: Box
-rounded = Box "╭" "─" "┬" "╮" "├" "─" "┼" "┤" "╰" "─" "┴" "╯" "│" "│"
+rounded = Box
+    "╭" "─" "┬" "╮"  -- top
+    "├" "─" "┼" "┤"  -- head row
+    "├" "─" "┼" "┤"  -- row
+    "╰" "─" "┴" "╯"  -- bottom
+    "│" "│"          -- vertical
 
 heavy :: Box
-heavy = Box "┏" "━" "┳" "┓" "┣" "━" "╋" "┫" "┗" "━" "┻" "┛" "┃" "┃"
+heavy = Box
+    "┏" "━" "┳" "┓"  -- top
+    "┣" "━" "╋" "┫"  -- head row
+    "┣" "━" "╋" "┫"  -- row
+    "┗" "━" "┻" "┛"  -- bottom
+    "┃" "┃"          -- vertical
 
 double :: Box
-double = Box "╔" "═" "╦" "╗" "╠" "═" "╬" "╣" "╚" "═" "╩" "╝" "║" "║"
+double = Box
+    "╔" "═" "╦" "╗"  -- top
+    "╠" "═" "╬" "╣"  -- head row
+    "╠" "═" "╬" "╣"  -- row
+    "╚" "═" "╩" "╝"  -- bottom
+    "║" "║"          -- vertical
+
+-- | Invisible box (no borders, just spaces)
+invisible :: Box
+invisible = Box
+    " " " " " " " "  -- top
+    " " " " " " " "  -- head row
+    " " " " " " " "  -- row
+    " " " " " " " "  -- bottom
+    " " " "          -- vertical
+
+-- | Horizontal line only (no vertical borders)
+horizontalLine :: Box
+horizontalLine = Box
+    "─" "─" "─" "─"  -- top
+    "─" "─" "─" "─"  -- head row
+    "─" "─" "─" "─"  -- row
+    "─" "─" "─" "─"  -- bottom
+    " " " "          -- vertical
+
+-- | Simple style - only header separator line (like Rich's SIMPLE)
+simple :: Box
+simple = Box
+    " " " " " " " "  -- top (no border above header)
+    " " "─" "─" " "  -- head row (line below header, continuous)
+    " " " " " " " "  -- row (no separators between body rows)
+    " " " " " " " "  -- bottom (no bottom border)
+    " " " "          -- vertical (no vertical lines)

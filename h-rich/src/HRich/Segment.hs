@@ -19,6 +19,7 @@ module HRich.Segment
     , wrapSegments
     , intercalateSegment
     , padToWidth
+    , padToWidthWithStyle
     ) where
 
 import HRich.Style
@@ -53,6 +54,15 @@ padToWidth n segments =
     in if needed <= 0
        then segments
        else segments ++ [Segment (T.replicate needed " ") Nothing]
+
+-- | Pad segments to width with a specific style for padding
+padToWidthWithStyle :: Int -> Style -> [Segment] -> [Segment]
+padToWidthWithStyle n style segments =
+    let currentLen = sum [ textWidth (segmentText s) | s <- segments ]
+        needed = n - currentLen
+    in if needed <= 0
+       then segments
+       else segments ++ [Segment (T.replicate needed " ") (Just style)]
 
 splitLines :: [Segment] -> [[Segment]]
 splitLines [] = []

@@ -22,7 +22,7 @@ module HRich.Syntax
 import HRich.Text
 import HRich.Style
 import HRich.Color
-import HRich.Segment
+import HRich.Segment (Segment(..), padToWidth, padToWidthWithStyle)
 import HRich.Renderable
 import HRich.Width (textWidth)
 import Data.Text (Text)
@@ -68,11 +68,16 @@ instance Renderable Syntax where
             contentWidth = consoleWidth opts - lineNumWidth
 
             -- Styles
-            lineNumStyle = emptyStyle { color = Just (RGB 100 100 100), dim = Just True }
-            guideStyle = emptyStyle { color = Just (RGB 60 60 60) }
+            lineNumStyle = emptyStyle { color = Just (RGB 100 100 100), dim = Just True, bgColor = syntaxBgColor s }
+            guideStyle = emptyStyle { color = Just (RGB 60 60 60), bgColor = syntaxBgColor s }
+
+            -- Apply background color to a segment
+            applyBg seg = case syntaxBgColor s of
+                Nothing -> seg
+                Just bg -> seg { segmentStyle = Just $ maybe (emptyStyle { bgColor = Just bg }) (\st -> st { bgColor = Just bg }) (segmentStyle seg) }
 
             -- Highlight based on language
-            highlightLine lineText = case T.toLower (syntaxLanguage s) of
+            highlightLine lineText = map applyBg $ case T.toLower (syntaxLanguage s) of
                 "python"  -> highlightPythonLine lineText
                 "haskell" -> highlightHaskellLine lineText
                 "json"    -> highlightJsonLine lineText
@@ -87,7 +92,9 @@ instance Renderable Syntax where
                                    else []
                     codeSegs = highlightLine lineText
                     allSegs = lineNumSeg ++ indentGuides ++ codeSegs
-                in padToWidth (consoleWidth opts) allSegs
+                    -- Pad with background color
+                    padStyle = emptyStyle { bgColor = syntaxBgColor s }
+                in padToWidthWithStyle (consoleWidth opts) padStyle allSegs
 
         in zipWith renderCodeLine [syntaxStartLine s ..] codeLines
 

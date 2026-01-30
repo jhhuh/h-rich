@@ -11,7 +11,7 @@ import HRich.Segment (Segment(..))
 import HRich.Style (Style(..), emptyStyle)
 import HRich.Color (Color(..))
 import HRich.Renderable (Renderable(..), ConsoleOptions(..), Indented(..))
-import HRich.Box (rounded, heavy)
+import HRich.Box (rounded, simple)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Data.Word (Word8)
@@ -86,7 +86,7 @@ main = do
     Console.printMarkup console "[bold red]CJK/Emoji[/bold red]     [bold cyan]中文[/bold cyan] [bold green]日本語[/bold green] [bold yellow]한국어[/bold yellow] properly aligned!\n"
     Console.printMarkup console (pad `T.append` "Wide chars: 你好世界 | Emoji: ✓ ✗ ★ ♥ ● ■\n\n")
 
-    -- Tables - use a real table with borders (indented to align with content)
+    -- Tables - Star Wars filmography with simple h-line style
     Console.printMarkup console "[bold red]Tables[/bold red]\n"
     Console.print console (Indented 14 makeStarWarsTable)
     TIO.putStrLn ""
@@ -135,18 +135,18 @@ main = do
             }
     Console.print console closingPanel
 
--- | Create the Star Wars movie table with borders
+-- | Create the Star Wars movie table with simple h-line style
 makeStarWarsTable :: Table.Table
 makeStarWarsTable =
-    Table.addRichRow [Text.fromMarkup "May 19, 1999", Text.fromMarkup "Star Wars Ep. [bold]I[/bold]: Phantom Menace", Text.fromMarkup "$115,000,000", Text.fromMarkup "$1,027,044,677"]
-    $ Table.addRichRow [Text.fromMarkup "Dec 15, 2017", Text.fromMarkup "Star Wars Ep. VIII: Last Jedi", Text.fromMarkup "$262,000,000", Text.fromMarkup "[bold cyan]$1,332,539,889[/bold cyan]"]
-    $ Table.addRichRow [Text.fromMarkup "May 25, 2018", Text.fromMarkup "[bold]Solo[/bold]: A Star Wars Story", Text.fromMarkup "$275,000,000", Text.fromMarkup "$393,151,347"]
-    $ Table.addRichRow [Text.fromMarkup "Dec 20, 2019", Text.fromMarkup "Star Wars: Rise of Skywalker", Text.fromMarkup "$275,000,000", Text.fromMarkup "[bold]$375,126,118[/bold]"]
-    $ Table.addColumn "Box Office"
-    $ Table.addColumn "Budget"
-    $ Table.addColumn "Title"
-    $ Table.addColumn "Date"
-    $ Table.table { Table.tableBox = heavy, Table.tableStyle = emptyStyle { color = Just (RGB 100 150 255) } }
+    Table.addRichRow [Text.fromMarkup "[green]Dec 20, 2019[/green]", Text.fromMarkup "[blue]Star Wars: Rise of Skywalker[/blue]", Text.fromMarkup "[cyan]$275,000,000[/cyan]", Text.fromMarkup "[magenta]$375,126,118[/magenta]"]
+    $ Table.addRichRow [Text.fromMarkup "[green]May 25, 2018[/green]", Text.fromMarkup "[blue][bold]Solo[/bold]: A Star Wars Story[/blue]", Text.fromMarkup "[cyan]$275,000,000[/cyan]", Text.fromMarkup "[magenta]$393,151,347[/magenta]"]
+    $ Table.addRichRow [Text.fromMarkup "[green]Dec 15, 2017[/green]", Text.fromMarkup "[blue]Star Wars Ep. VIII: Last Jedi[/blue]", Text.fromMarkup "[cyan]$262,000,000[/cyan]", Text.fromMarkup "[magenta][bold]$1,332,539,889[/bold][/magenta]"]
+    $ Table.addRichRow [Text.fromMarkup "[green]May 19, 1999[/green]", Text.fromMarkup "[blue]Star Wars Ep. [bold]I[/bold]: Phantom Menace[/blue]", Text.fromMarkup "[cyan]$115,000,000[/cyan]", Text.fromMarkup "[magenta]$1,027,044,677[/magenta]"]
+    $ Table.addColumn "[green]Released[/green]"
+    $ Table.addColumn "[blue]Title[/blue]"
+    $ Table.addColumn "[cyan]Budget[/cyan]"
+    $ Table.addColumn "[magenta]Box Office[/magenta]"
+    $ Table.table { Table.tableBox = simple }
 
 -- | Create the syntax highlighting demo
 makeSyntaxDemo :: Syntax.Syntax
@@ -167,6 +167,7 @@ makeSyntaxDemo =
     in (Syntax.syntax code "python")
         { Syntax.syntaxLineNumbers = True
         , Syntax.syntaxIndentGuides = True
+        , Syntax.syntaxBgColor = Just (RGB 40 42 54)  -- Dark background like Dracula theme
         }
 
 -- | Create the columns demo with side-by-side panels
