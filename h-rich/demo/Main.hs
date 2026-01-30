@@ -7,6 +7,7 @@ import qualified HRich.Table as Table
 import qualified HRich.Syntax as Syntax
 import qualified HRich.Text as Text
 import qualified HRich.Columns as Columns
+import qualified HRich.Markdown as Markdown
 import HRich.Segment (Segment(..))
 import HRich.Style (Style(..), emptyStyle)
 import HRich.Color (Color(..))
@@ -101,14 +102,18 @@ main = do
     Console.print console (Indented 14 makeMarkdownDemo)
     TIO.putStrLn ""
 
-    -- Tree
-    Console.printMarkup console "[bold red]Tree[/bold red]          [bold cyan]src[/bold cyan]\n"
-    Console.printMarkup console (pad `T.append` "├── [yellow]HRich[/yellow]\n")
-    Console.printMarkup console (pad `T.append` "│   ├── Console.hs\n")
-    Console.printMarkup console (pad `T.append` "│   ├── Text.hs\n")
-    Console.printMarkup console (pad `T.append` "│   └── [green]Style.hs[/green]\n")
-    Console.printMarkup console (pad `T.append` "└── [yellow]demo[/yellow]\n")
-    Console.printMarkup console (pad `T.append` "    └── [magenta]Main.hs[/magenta]\n\n")
+    -- Tree with deeper nesting
+    Console.printMarkup console "[bold red]Tree[/bold red]          [bold cyan]project[/bold cyan]\n"
+    Console.printMarkup console (pad `T.append` "├── [yellow]src[/yellow]\n")
+    Console.printMarkup console (pad `T.append` "│   ├── [yellow]HRich[/yellow]\n")
+    Console.printMarkup console (pad `T.append` "│   │   ├── Console.hs\n")
+    Console.printMarkup console (pad `T.append` "│   │   ├── [green]Style.hs[/green]\n")
+    Console.printMarkup console (pad `T.append` "│   │   └── [yellow]Internal[/yellow]\n")
+    Console.printMarkup console (pad `T.append` "│   │       └── Utils.hs\n")
+    Console.printMarkup console (pad `T.append` "│   └── Main.hs\n")
+    Console.printMarkup console (pad `T.append` "├── [yellow]test[/yellow]\n")
+    Console.printMarkup console (pad `T.append` "│   └── [magenta]Spec.hs[/magenta]\n")
+    Console.printMarkup console (pad `T.append` "└── README.md\n\n")
 
     -- Progress
     Console.printMarkup console "[bold red]Progress[/bold red]      Installing... \\[[green]━━━━━━━━━━━━━━━━━━━━━━━━━[/green][dim]━━━━━━━━━━[/dim]\\] 75%\n\n"
@@ -179,29 +184,21 @@ makeSyntaxAndJsonDemo =
 -- | Create the markdown raw vs rendered demo
 makeMarkdownDemo :: Columns.Columns
 makeMarkdownDemo =
-    let rawMarkdown = Text.fromMarkup $ T.unlines
-            [ "[dim]# Heading[/dim]"
-            , "[dim]*italic* **bold**[/dim]"
-            , "[dim]- list item[/dim]"
-            , "[dim]> quote[/dim]"
-            , "[dim]`code`[/dim]"
+    let markdownSource = T.unlines
+            [ "# Heading"
+            , "## Subheading"
+            , "- First item"
+            , "- Second item"
             ]
         rawPanel = Panel.Panel
-            { Panel.panelRenderable = rawMarkdown
+            { Panel.panelRenderable = Text.fromPlain markdownSource
             , Panel.panelTitle = Just "Markdown"
             , Panel.panelBox = rounded
             , Panel.panelStyle = emptyStyle { color = Just (RGB 150 150 150) }
             , Panel.panelExpand = True
             }
-        renderedMarkdown = Text.fromMarkup $ T.unlines
-            [ "[bold cyan]Heading[/bold cyan]"
-            , "[italic]italic[/italic] [bold]bold[/bold]"
-            , "• list item"
-            , "[dim]│[/dim] quote"
-            , "[cyan]`code`[/cyan]"
-            ]
         renderedPanel = Panel.Panel
-            { Panel.panelRenderable = renderedMarkdown
+            { Panel.panelRenderable = Markdown.renderMarkdown markdownSource
             , Panel.panelTitle = Just "Rendered"
             , Panel.panelBox = rounded
             , Panel.panelStyle = emptyStyle { color = Just (RGB 100 200 100) }
