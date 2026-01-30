@@ -2,6 +2,8 @@
 
 A Haskell port of Python's [Rich](https://github.com/Textualize/rich) library for beautiful terminal output.
 
+![Demo](assets/demo.svg)
+
 ## AI Agent Experiment
 
 This project is an experiment to evaluate the ability of AI agents to translate a Python library into Haskell. The entire codebase was generated through AI-assisted development, exploring how effectively modern AI can:
