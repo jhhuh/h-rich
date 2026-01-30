@@ -13,6 +13,10 @@ module HRich.Syntax
     ( -- * Syntax Type
       Syntax(..)
     , syntax
+      -- * Themes
+    , SyntaxTheme(..)
+    , darkTheme
+    , lightTheme
       -- * Legacy Functions
     , highlightJson
     , highlightHaskell
@@ -35,14 +39,53 @@ import Data.List (intercalate)
 
 type Parser = Parsec Void Text
 
+-- | Color theme for syntax highlighting
+data SyntaxTheme = SyntaxTheme
+    { themeKeyword    :: Color  -- ^ Keywords (def, class, if, etc.)
+    , themeString     :: Color  -- ^ String literals
+    , themeComment    :: Color  -- ^ Comments
+    , themeNumber     :: Color  -- ^ Numeric literals
+    , themeOperator   :: Color  -- ^ Operators and punctuation
+    , themeType       :: Color  -- ^ Type names (for Haskell)
+    , themeLineNum    :: Color  -- ^ Line numbers
+    , themeGuide      :: Color  -- ^ Indent guides
+    } deriving (Show, Eq)
+
+-- | Dark theme (Monokai-like) - for dark backgrounds
+darkTheme :: SyntaxTheme
+darkTheme = SyntaxTheme
+    { themeKeyword  = RGB 249 38 114   -- Pink/red
+    , themeString   = RGB 230 219 116  -- Yellow
+    , themeComment  = RGB 117 113 94   -- Gray
+    , themeNumber   = RGB 174 129 255  -- Purple
+    , themeOperator = RGB 249 38 114   -- Pink/red
+    , themeType     = RGB 102 217 239  -- Cyan
+    , themeLineNum  = RGB 100 100 100  -- Dark gray
+    , themeGuide    = RGB 60 60 60     -- Darker gray
+    }
+
+-- | Light theme (Solarized Light) - for light backgrounds
+lightTheme :: SyntaxTheme
+lightTheme = SyntaxTheme
+    { themeKeyword  = RGB 133 153 0    -- Green
+    , themeString   = RGB 42 161 152   -- Cyan
+    , themeComment  = RGB 88 110 117   -- Base01 gray
+    , themeNumber   = RGB 108 113 196  -- Violet
+    , themeOperator = RGB 203 75 22    -- Orange
+    , themeType     = RGB 38 139 210   -- Blue
+    , themeLineNum  = RGB 147 161 161  -- Base1
+    , themeGuide    = RGB 238 232 213  -- Base2
+    }
+
 -- | A syntax-highlighted code block.
 data Syntax = Syntax
-    { syntaxCode        :: Text         -- ^ The source code
-    , syntaxLanguage    :: Text         -- ^ Language name (e.g., "python", "haskell")
-    , syntaxLineNumbers :: Bool         -- ^ Show line numbers
-    , syntaxIndentGuides :: Bool        -- ^ Show indent guides
-    , syntaxStartLine   :: Int          -- ^ Starting line number
-    , syntaxBgColor     :: Maybe Color  -- ^ Background color for the block
+    { syntaxCode        :: Text           -- ^ The source code
+    , syntaxLanguage    :: Text           -- ^ Language name (e.g., "python", "haskell")
+    , syntaxLineNumbers :: Bool           -- ^ Show line numbers
+    , syntaxIndentGuides :: Bool          -- ^ Show indent guides
+    , syntaxStartLine   :: Int            -- ^ Starting line number
+    , syntaxBgColor     :: Maybe Color    -- ^ Background color for the block
+    , syntaxTheme       :: SyntaxTheme    -- ^ Color theme
     } deriving (Show, Eq)
 
 -- | Create a syntax-highlighted code block.
@@ -54,6 +97,7 @@ syntax code lang = Syntax
     , syntaxIndentGuides = False
     , syntaxStartLine = 1
     , syntaxBgColor = Nothing
+    , syntaxTheme = darkTheme
     }
 
 instance Renderable Syntax where
@@ -66,10 +110,11 @@ instance Renderable Syntax where
                            then length (show (syntaxStartLine s + totalLines - 1)) + 1
                            else 0
             contentWidth = consoleWidth opts - lineNumWidth
+            theme = syntaxTheme s
 
-            -- Styles
-            lineNumStyle = emptyStyle { color = Just (RGB 100 100 100), dim = Just True, bgColor = syntaxBgColor s }
-            guideStyle = emptyStyle { color = Just (RGB 60 60 60), bgColor = syntaxBgColor s }
+            -- Styles using theme
+            lineNumStyle = emptyStyle { color = Just (themeLineNum theme), dim = Just True, bgColor = syntaxBgColor s }
+            guideStyle = emptyStyle { color = Just (themeGuide theme), bgColor = syntaxBgColor s }
 
             -- Apply background color to a segment
             applyBg seg = case syntaxBgColor s of
@@ -78,8 +123,8 @@ instance Renderable Syntax where
 
             -- Highlight based on language
             highlightLine lineText = map applyBg $ case T.toLower (syntaxLanguage s) of
-                "python"  -> highlightPythonLine lineText
-                "haskell" -> highlightHaskellLine lineText
+                "python"  -> highlightPythonLine theme lineText
+                "haskell" -> highlightHaskellLine theme lineText
                 "json"    -> highlightJsonLine lineText
                 _         -> [Segment lineText Nothing]
 
@@ -114,22 +159,22 @@ padLeft :: Int -> String -> String
 padLeft n s = replicate (n - length s) ' ' ++ s
 
 -- Python highlighting
-highlightPythonLine :: Text -> [Segment]
-highlightPythonLine line = case parse pythonLineParser "" line of
+highlightPythonLine :: SyntaxTheme -> Text -> [Segment]
+highlightPythonLine theme line = case parse (pythonLineParser theme) "" line of
     Left _ -> [Segment line Nothing]
     Right segs -> segs
 
-pythonLineParser :: Parser [Segment]
-pythonLineParser = concat <$> many pythonTokenP <* eof
+pythonLineParser :: SyntaxTheme -> Parser [Segment]
+pythonLineParser theme = concat <$> many (pythonTokenP theme) <* eof
 
-pythonTokenP :: Parser [Segment]
-pythonTokenP = choice
-    [ pythonCommentP
-    , pythonStringP
-    , pythonKeywordP
-    , pythonNumberP
+pythonTokenP :: SyntaxTheme -> Parser [Segment]
+pythonTokenP theme = choice
+    [ pythonCommentP theme
+    , pythonStringP theme
+    , pythonKeywordP theme
+    , pythonNumberP theme
     , pythonIdentP
-    , pythonOpP
+    , pythonOpP theme
     , pythonWhitespaceP
     ]
 
@@ -139,45 +184,44 @@ pythonKeywords = ["def", "class", "if", "else", "elif", "for", "while", "try",
                   "yield", "raise", "pass", "break", "continue", "and", "or",
                   "not", "in", "is", "lambda", "True", "False", "None", "async", "await"]
 
-pythonCommentP :: Parser [Segment]
-pythonCommentP = do
-    start <- getOffset
+pythonCommentP :: SyntaxTheme -> Parser [Segment]
+pythonCommentP theme = do
     _ <- char '#'
     rest <- takeRest
     let comment = "#" `T.append` rest
-    return [Segment comment (Just $ emptyStyle { color = Just (RGB 117 113 94), italic = Just True })]
+    return [Segment comment (Just $ emptyStyle { color = Just (themeComment theme), italic = Just True })]
 
-pythonStringP :: Parser [Segment]
-pythonStringP = do
+pythonStringP :: SyntaxTheme -> Parser [Segment]
+pythonStringP theme = do
     quote <- string "\"\"\"" <|> string "'''" <|> string "\"" <|> string "'"
     content <- case T.length quote of
         3 -> manyTill anySingle (string quote)
         _ -> many (noneOf [T.head quote] <|> try (char '\\' >> anySingle))
     let fullStr = quote `T.append` T.pack content `T.append` quote
-    return [Segment fullStr (Just $ emptyStyle { color = Just (RGB 230 219 116) })]
+    return [Segment fullStr (Just $ emptyStyle { color = Just (themeString theme) })]
 
-pythonKeywordP :: Parser [Segment]
-pythonKeywordP = do
+pythonKeywordP :: SyntaxTheme -> Parser [Segment]
+pythonKeywordP theme = do
     word <- some (alphaNumChar <|> char '_')
     let wordText = T.pack word
     if wordText `elem` pythonKeywords
-       then return [Segment wordText (Just $ emptyStyle { color = Just (RGB 249 38 114), bold = Just True })]
+       then return [Segment wordText (Just $ emptyStyle { color = Just (themeKeyword theme), bold = Just True })]
        else return [Segment wordText Nothing]
 
-pythonNumberP :: Parser [Segment]
-pythonNumberP = do
+pythonNumberP :: SyntaxTheme -> Parser [Segment]
+pythonNumberP theme = do
     num <- some (digitChar <|> char '.')
-    return [Segment (T.pack num) (Just $ emptyStyle { color = Just (RGB 174 129 255) })]
+    return [Segment (T.pack num) (Just $ emptyStyle { color = Just (themeNumber theme) })]
 
 pythonIdentP :: Parser [Segment]
 pythonIdentP = do
     word <- some (alphaNumChar <|> char '_')
     return [Segment (T.pack word) Nothing]
 
-pythonOpP :: Parser [Segment]
-pythonOpP = do
+pythonOpP :: SyntaxTheme -> Parser [Segment]
+pythonOpP theme = do
     op <- oneOf ("()[]{}:,=+-*/<>!@%^&|~." :: String)
-    return [Segment (T.singleton op) (Just $ emptyStyle { color = Just (RGB 249 38 114) })]
+    return [Segment (T.singleton op) (Just $ emptyStyle { color = Just (themeOperator theme) })]
 
 pythonWhitespaceP :: Parser [Segment]
 pythonWhitespaceP = do
@@ -185,23 +229,23 @@ pythonWhitespaceP = do
     return [Segment (T.pack ws) Nothing]
 
 -- Haskell highlighting
-highlightHaskellLine :: Text -> [Segment]
-highlightHaskellLine line = case parse haskellLineParser "" line of
+highlightHaskellLine :: SyntaxTheme -> Text -> [Segment]
+highlightHaskellLine theme line = case parse (haskellLineParser theme) "" line of
     Left _ -> [Segment line Nothing]
     Right segs -> segs
 
-haskellLineParser :: Parser [Segment]
-haskellLineParser = concat <$> many haskellTokenP <* eof
+haskellLineParser :: SyntaxTheme -> Parser [Segment]
+haskellLineParser theme = concat <$> many (haskellTokenP theme) <* eof
 
-haskellTokenP :: Parser [Segment]
-haskellTokenP = choice
-    [ haskellCommentP
-    , haskellStringP
-    , haskellKeywordP
-    , haskellTypeP
-    , haskellNumberP
+haskellTokenP :: SyntaxTheme -> Parser [Segment]
+haskellTokenP theme = choice
+    [ haskellCommentP theme
+    , haskellStringP theme
+    , haskellKeywordP theme
+    , haskellTypeP theme
+    , haskellNumberP theme
     , haskellIdentP
-    , haskellOpP
+    , haskellOpP theme
     , haskellWhitespaceP
     ]
 
@@ -211,50 +255,50 @@ haskellKeywords = ["module", "where", "import", "qualified", "as", "hiding",
                    "if", "then", "else", "case", "of", "let", "in", "do",
                    "return", "pure"]
 
-haskellCommentP :: Parser [Segment]
-haskellCommentP = do
+haskellCommentP :: SyntaxTheme -> Parser [Segment]
+haskellCommentP theme = do
     _ <- string "--"
     rest <- takeRest
     let comment = "--" `T.append` rest
-    return [Segment comment (Just $ emptyStyle { color = Just (RGB 117 113 94), italic = Just True })]
+    return [Segment comment (Just $ emptyStyle { color = Just (themeComment theme), italic = Just True })]
 
-haskellStringP :: Parser [Segment]
-haskellStringP = do
+haskellStringP :: SyntaxTheme -> Parser [Segment]
+haskellStringP theme = do
     _ <- char '"'
     content <- many (noneOf ['"'] <|> try (char '\\' >> anySingle))
     _ <- char '"'
     let fullStr = "\"" `T.append` T.pack content `T.append` "\""
-    return [Segment fullStr (Just $ emptyStyle { color = Just (RGB 230 219 116) })]
+    return [Segment fullStr (Just $ emptyStyle { color = Just (themeString theme) })]
 
-haskellKeywordP :: Parser [Segment]
-haskellKeywordP = try $ do
+haskellKeywordP :: SyntaxTheme -> Parser [Segment]
+haskellKeywordP theme = try $ do
     word <- some (alphaNumChar <|> char '_' <|> char '\'')
     let wordText = T.pack word
     if wordText `elem` haskellKeywords
-       then return [Segment wordText (Just $ emptyStyle { color = Just (RGB 249 38 114), bold = Just True })]
+       then return [Segment wordText (Just $ emptyStyle { color = Just (themeKeyword theme), bold = Just True })]
        else fail "not a keyword"
 
-haskellTypeP :: Parser [Segment]
-haskellTypeP = try $ do
+haskellTypeP :: SyntaxTheme -> Parser [Segment]
+haskellTypeP theme = try $ do
     first <- upperChar
     rest <- many (alphaNumChar <|> char '_' <|> char '\'')
     let typeText = T.pack (first : rest)
-    return [Segment typeText (Just $ emptyStyle { color = Just (RGB 102 217 239), italic = Just True })]
+    return [Segment typeText (Just $ emptyStyle { color = Just (themeType theme), italic = Just True })]
 
-haskellNumberP :: Parser [Segment]
-haskellNumberP = do
+haskellNumberP :: SyntaxTheme -> Parser [Segment]
+haskellNumberP theme = do
     num <- some (digitChar <|> char '.')
-    return [Segment (T.pack num) (Just $ emptyStyle { color = Just (RGB 174 129 255) })]
+    return [Segment (T.pack num) (Just $ emptyStyle { color = Just (themeNumber theme) })]
 
 haskellIdentP :: Parser [Segment]
 haskellIdentP = do
     word <- some (alphaNumChar <|> char '_' <|> char '\'')
     return [Segment (T.pack word) Nothing]
 
-haskellOpP :: Parser [Segment]
-haskellOpP = do
+haskellOpP :: SyntaxTheme -> Parser [Segment]
+haskellOpP theme = do
     op <- oneOf ("()[]{}:,=+-*/<>!@#$%^&|~.;`\\" :: String)
-    return [Segment (T.singleton op) (Just $ emptyStyle { color = Just (RGB 249 38 114) })]
+    return [Segment (T.singleton op) (Just $ emptyStyle { color = Just (themeOperator theme) })]
 
 haskellWhitespaceP :: Parser [Segment]
 haskellWhitespaceP = do

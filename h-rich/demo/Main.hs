@@ -91,19 +91,15 @@ main = do
     Console.print console (Indented 14 makeStarWarsTable)
     TIO.putStrLn ""
 
-    -- Syntax highlighting - print the Syntax component directly (indented)
-    Console.printMarkup console "[bold red]Syntax[/bold red]        [dim]Python code with syntax highlighting:[/dim]\n"
-    Console.printMarkup console "[bold red]highlighting[/bold red]\n"
-    Console.print console (Indented 14 makeSyntaxDemo)
+    -- Syntax highlighting + Pretty printing side by side
+    Console.printMarkup console "[bold red]Syntax[/bold red]\n"
+    Console.print console (Indented 14 makeSyntaxAndJsonDemo)
     TIO.putStrLn ""
 
-    -- Markdown
-    Console.printMarkup console "[bold red]Markdown[/bold red]      [dim]# Markdown[/dim]\n"
-    Console.printMarkup console (pad `T.append` "Supports *markdown* syntax!\n")
-    Console.printMarkup console (pad `T.append` "- Headers\n")
-    Console.printMarkup console (pad `T.append` "- Basic formatting: [bold]bold[/bold], [italic]italic[/italic], [cyan]`code`[/cyan]\n")
-    Console.printMarkup console (pad `T.append` "- Block quotes\n")
-    Console.printMarkup console (pad `T.append` "- Lists, and more...\n\n")
+    -- Markdown: raw vs rendered
+    Console.printMarkup console "[bold red]Markdown[/bold red]\n"
+    Console.print console (Indented 14 makeMarkdownDemo)
+    TIO.putStrLn ""
 
     -- Tree
     Console.printMarkup console "[bold red]Tree[/bold red]          [bold cyan]src[/bold cyan]\n"
@@ -148,27 +144,70 @@ makeStarWarsTable =
     $ Table.addColumn "[magenta]Box Office[/magenta]"
     $ Table.table { Table.tableBox = simple }
 
--- | Create the syntax highlighting demo
-makeSyntaxDemo :: Syntax.Syntax
-makeSyntaxDemo =
-    let code = T.unlines
-            [ "def iter_last(values):"
-            , "    \"\"\"Iterate and generate a tuple with a flag for last value.\"\"\""
-            , "    iter_values = iter(values)"
-            , "    try:"
-            , "        previous_value = next(iter_values)"
-            , "    except StopIteration:"
-            , "        return"
-            , "    for value in iter_values:"
-            , "        yield False, previous_value"
-            , "        previous_value = value"
-            , "    yield True, previous_value"
+-- | Create the syntax highlighting + JSON demo side by side
+makeSyntaxAndJsonDemo :: Columns.Columns
+makeSyntaxAndJsonDemo =
+    let haskellCode = T.unlines
+            [ "data User = User"
+            , "    { name :: Text"
+            , "    , age  :: Int"
+            , "    } deriving Show"
+            , ""
+            , "greet :: User -> Text"
+            , "greet user ="
+            , "    \"Hello, \" <> name user"
             ]
-    in (Syntax.syntax code "python")
-        { Syntax.syntaxLineNumbers = True
-        , Syntax.syntaxIndentGuides = True
-        , Syntax.syntaxBgColor = Just (RGB 40 42 54)  -- Dark background like Dracula theme
-        }
+        syntaxBlock = (Syntax.syntax haskellCode "haskell")
+            { Syntax.syntaxLineNumbers = True
+            , Syntax.syntaxBgColor = Just (RGB 253 246 227)  -- Solarized Light
+            , Syntax.syntaxTheme = Syntax.lightTheme
+            }
+        jsonCode = T.unlines
+            [ "{"
+            , "    \"name\": \"Alice\","
+            , "    \"age\": 30,"
+            , "    \"active\": true"
+            , "}"
+            ]
+        jsonBlock = (Syntax.syntax jsonCode "json")
+            { Syntax.syntaxLineNumbers = True
+            , Syntax.syntaxBgColor = Just (RGB 40 42 54)  -- Dark background
+            , Syntax.syntaxTheme = Syntax.darkTheme
+            }
+    in Columns.columns [syntaxBlock, jsonBlock]
+
+-- | Create the markdown raw vs rendered demo
+makeMarkdownDemo :: Columns.Columns
+makeMarkdownDemo =
+    let rawMarkdown = Text.fromMarkup $ T.unlines
+            [ "[dim]# Heading[/dim]"
+            , "[dim]*italic* **bold**[/dim]"
+            , "[dim]- list item[/dim]"
+            , "[dim]> quote[/dim]"
+            , "[dim]`code`[/dim]"
+            ]
+        rawPanel = Panel.Panel
+            { Panel.panelRenderable = rawMarkdown
+            , Panel.panelTitle = Just "Markdown"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 150 150 150) }
+            , Panel.panelExpand = True
+            }
+        renderedMarkdown = Text.fromMarkup $ T.unlines
+            [ "[bold cyan]Heading[/bold cyan]"
+            , "[italic]italic[/italic] [bold]bold[/bold]"
+            , "• list item"
+            , "[dim]│[/dim] quote"
+            , "[cyan]`code`[/cyan]"
+            ]
+        renderedPanel = Panel.Panel
+            { Panel.panelRenderable = renderedMarkdown
+            , Panel.panelTitle = Just "Rendered"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 100 200 100) }
+            , Panel.panelExpand = True
+            }
+    in Columns.columns [rawPanel, renderedPanel]
 
 -- | Create the columns demo with side-by-side panels
 makeColumnsDemo :: Columns.Columns
