@@ -30,7 +30,7 @@ type Parser = Parsec Void Text
 highlightJson :: Text -> HRichText
 highlightJson input = case parse jsonParser "" input of
     Left _ -> fromPlain input
-    Right spans -> HRichText input spans emptyStyle
+    Right spans -> HRichText input spans emptyStyle JustifyLeft
 
 jsonParser :: Parser [Span]
 jsonParser = concat <$> many tokenP

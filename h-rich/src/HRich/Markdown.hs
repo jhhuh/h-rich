@@ -127,4 +127,4 @@ paragraphP = do
     return $ Paragraph (fromPlain content) -- TODO: Parse styled text
 
 applyStyle :: Style -> HRichText -> HRichText
-applyStyle s (HRichText t spans base) = HRichText t spans (combineStyles base s)
+applyStyle s (HRichText t spans base j) = HRichText t spans (combineStyles base s) j

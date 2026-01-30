@@ -65,14 +65,14 @@ log logger level msg = do
             style = lookupStyle (loggerTheme logger) styleName
             
             -- Manual rich text construction to avoid markup collision in message
-            levelRich = HRichText levelText [] style
+            levelRich = HRichText levelText [] style HText.JustifyLeft
             -- We assume message is plain text for safety here, or could allow markup.
             -- Let's allow markup usage in logs for flexibility.
-            msgRich = fromMarkup msg 
-            
+            msgRich = fromMarkup msg
+
             -- Timestamp style (dim)
             timeStyle = emptyStyle { dim = Just True }
-            timeRich = HRichText timestamp [] timeStyle
+            timeRich = HRichText timestamp [] timeStyle HText.JustifyLeft
             
             -- Layout: Timestamp | Level | Message
             -- We can use Columns, but we want fixed width for Time and Level potentially.
@@ -120,6 +120,7 @@ log logger level msg = do
                              , HText.Span (T.length timestamp + 1) (T.length timestamp + 1 + T.length levelText) style
                              ]
                              emptyStyle
+                             HText.JustifyLeft
                              
         -- Print prefix then message? No, message might wrap.
         -- Ideally: Table with invisible borders.

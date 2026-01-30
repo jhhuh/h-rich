@@ -9,87 +9,139 @@ import qualified HRich.Progress as Progress
 import qualified HRich.Tree as Tree
 import qualified HRich.Syntax as Syntax
 import qualified HRich.Markdown as Markdown
-import qualified HRich.Log as Log
-import qualified HRich.Traceback as Traceback
-import qualified HRich.Theme as Theme
 import qualified HRich.Text as Text
-import qualified HRich.Segment as Segment
-import qualified Prelude as P
-import Prelude (IO, ($), (.), id, return)
+import HRich.Segment (Segment(..))
+import HRich.Style (Style(..), emptyStyle)
+import HRich.Color (Color(..))
+import HRich.Renderable (Renderable(..), ConsoleOptions(..))
+import HRich.Box (rounded)
+import qualified Data.Text as T
+import Data.Word (Word8)
+
+-- | Generate a color spectrum using HSL to RGB conversion
+-- Uses the "▄" character with different fg/bg colors for smooth gradient
+newtype ColorBox = ColorBox Int  -- width
+
+hslToRgb :: Double -> Double -> Double -> (Word8, Word8, Word8)
+hslToRgb h s l =
+    let c = (1 - abs (2 * l - 1)) * s
+        x = c * (1 - abs (((h / 60) `mod'` 2) - 1))
+        m = l - c / 2
+        (r', g', b') = case floor (h / 60) `mod` 6 of
+            0 -> (c, x, 0)
+            1 -> (x, c, 0)
+            2 -> (0, c, x)
+            3 -> (0, x, c)
+            4 -> (x, 0, c)
+            _ -> (c, 0, x)
+        toWord8 v = round ((v + m) * 255)
+    in (toWord8 r', toWord8 g', toWord8 b')
+  where
+    mod' a b = a - b * fromIntegral (floor (a / b) :: Int)
+
+instance Renderable ColorBox where
+    render options (ColorBox _) = concat (renderLines options (ColorBox 0))
+
+    renderLines options (ColorBox _) =
+        let width = consoleWidth options
+            rows = 5 :: Int
+            makeRow y =
+                [ let h = (fromIntegral x / fromIntegral width) * 360
+                      l1 = 0.1 + (fromIntegral y / fromIntegral rows) * 0.7
+                      l2 = l1 + 0.07
+                      (r1, g1, b1) = hslToRgb h 1.0 l1
+                      (r2, g2, b2) = hslToRgb h 1.0 l2
+                      style = emptyStyle { color = Just (RGB r2 g2 b2), bgColor = Just (RGB r1 g1 b1) }
+                  in Segment "▄" (Just style)
+                | x <- [0..width-1]
+                ]
+        in [ makeRow y | y <- [0..rows-1] ]
 
 main :: IO ()
 main = do
     console <- Console.defaultConsole
-    
-    let header = Panel.panel (Text.fromMarkup "[bold white on blue] h-rich [/bold white on blue]")
-    
-    let intro = Panel.panel (Text.fromMarkup "A Haskell port of the [bold magenta]Rich[/bold magenta] library for Python.\nSupports [green]colors[/green], [italic]styles[/italic], tables, progress bars, and more.")
-    
-    let styles = Panel.panel (Text.fromMarkup "[bold]Bold[/bold]\n[italic]Italic[/italic]\n[underline]Underline[/underline]\n[strike]Strike[/strike]")
-    
-    let colors = Panel.panel (Text.fromMarkup "[red]Red[/red] [green]Green[/green] [blue]Blue[/blue]\n[yellow]Yellow[/yellow] [magenta]Magenta[/magenta] [cyan]Cyan[/cyan]\n[rgb(255,165,0)]TrueColor Orange[/rgb(255,165,0)]")
-    
-    let movieTable = Table.addRow ["Star Wars: A New Hope", "1977", "$775M"]
-                   . Table.addRow ["The Empire Strikes Back", "1980", "$538M"]
-                   . Table.addRow ["Return of the Jedi", "1983", "$475M"]
-                   . Table.addColumn "Revenue"
-                   . Table.addColumn "Year"
-                   . Table.addColumn "Title"
+
+    -- Title
+    Console.printMarkup console "[bold magenta]h-rich[/bold magenta] [dim]features[/dim]\n"
+
+    -- Colors section
+    Console.printMarkup console "\n[bold red]Colors[/bold red]"
+    Console.printMarkup console "  [green]✓[/green] [bold green]4-bit color[/bold green]"
+    Console.printMarkup console "  [green]✓[/green] [bold blue]8-bit color[/bold blue]"
+    Console.printMarkup console "  [green]✓[/green] [bold magenta]Truecolor (16.7 million)[/bold magenta]"
+    Console.printMarkup console "  [green]✓[/green] [bold cyan]Automatic color conversion[/bold cyan]\n"
+    Console.print console (ColorBox 80)
+
+    -- Styles section
+    Console.printMarkup console "\n[bold red]Styles[/bold red]"
+    Console.printMarkup console "  All ANSI styles: [bold]bold[/bold], [dim]dim[/dim], [italic]italic[/italic], [underline]underline[/underline], [strike]strikethrough[/strike], and [blink]blink[/blink].\n"
+
+    -- Text justification section
+    Console.printMarkup console "[bold red]Text[/bold red]"
+    Console.printMarkup console "  Word wrap text. Justify [green]left[/green], [yellow]center[/yellow], [blue]right[/blue], or [red]full[/red].\n"
+    let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    Console.print console $ Columns.columns
+        [ Text.leftJustify $ Text.fromMarkup $ "[green]" `T.append` lorem `T.append` "[/green]"
+        , Text.centerJustify $ Text.fromMarkup $ "[yellow]" `T.append` lorem `T.append` "[/yellow]"
+        , Text.rightJustify $ Text.fromMarkup $ "[blue]" `T.append` lorem `T.append` "[/blue]"
+        ]
+
+    -- Markup section
+    Console.printMarkup console "[bold red]Markup[/bold red]"
+    Console.printMarkup console "  [bold magenta]Rich[/bold magenta] supports a simple [italic]bbcode[/italic]-like [bold]markup[/bold] for [yellow]color[/yellow], [underline]style[/underline], and more!\n"
+
+    -- Tables section
+    Console.printMarkup console "[bold red]Tables[/bold red]"
+    let movieTable = Table.addRow ["Star Wars: The Rise of Skywalker", "Dec 20, 2019", "$275,000,000", "[bold]$375,126,118[/bold]"]
+                   . Table.addRow ["[bold]Solo[/bold]: A Star Wars Story", "May 25, 2018", "$275,000,000", "$393,151,347"]
+                   . Table.addRow ["Star Wars Ep. VIII: The Last Jedi", "Dec 15, 2017", "$262,000,000", "[bold cyan]$1,332,539,889[/bold cyan]"]
+                   . Table.addRow ["Star Wars Ep. [bold]I[/bold]: The Phantom Menace", "May 19, 1999", "$115,000,000", "$1,027,044,677"]
+                   . Table.addColumn "[magenta]Box Office[/magenta]"
+                   . Table.addColumn "[cyan]Budget[/cyan]"
+                   . Table.addColumn "[green]Date[/green]"
+                   . Table.addColumn "[blue]Title[/blue]"
                    $ Table.table
-
-    let progress = (Progress.progressBar 0.75 1.0) { Progress.progressLabel = P.Just "Downloading assets..." }
-    
-    let layout = Columns.columns 
-            [ Panel.panel (Text.fromMarkup "[yellow]Styles & Colors[/yellow]\n\nSee the panel below.")
-            , Panel.panel (Text.fromMarkup "[cyan]Layouts[/cyan]\n\nResponsive grids.")
-            ]
-
-    let dashboard = Panel.panel $ Columns.columns [styles, colors]
-
-    -- Tree Demo
-    let treeNode = Tree.Node (Text.fromMarkup "[bold]Root[/bold]") 
-            [ Tree.Node (Text.fromMarkup "Child 1") []
-            , Tree.Node (Text.fromMarkup "Child 2")
-                [ Tree.Node (Text.fromMarkup "Grandchild A") []
-                , Tree.Node (Text.fromMarkup "[red]Grandchild B[/red]") []
-                ]
-            , Tree.Node (Text.fromMarkup "Child 3") []
-            ]
-    
-    -- Let's construct a tree panel properly
-    let treeRendered = Tree.Tree treeNode
-    
-    -- Syntax Demo
-    let jsonSource = "{\n  \"key\": \"value\",\n  \"number\": 123,\n  \"bool\": true,\n  \"null\": null\n}"
-    let syntaxView = Panel.panel (Syntax.highlightJson jsonSource)
-
-    -- Markdown Demo
-    let mdSource = "# Markdown Support\n\nThis is a *paragraph* with [bold]rich text[/bold].\n\n- Item 1\n- Item 2\n\n```\ncode block\n```"
-    let mdView = Panel.panel (Markdown.renderMarkdown mdSource)
-    
-    -- Production Features Demo
-    logger <- Log.defaultLogger
-    -- We can't easily capture logger stdout here mixed with our Panel layout demo without redesigning.
-    -- So we'll just print logs at the end.
-
-    Console.print console header
-    Console.print console intro
-    Console.print console layout
-    Console.print console dashboard
     Console.print console movieTable
-    Console.printMarkup console "\n[bold]Tree View:[/bold]"
-    Console.print console treeRendered
-    Console.printMarkup console "\n[bold]Syntax Highlighting (JSON):[/bold]"
-    Console.print console syntaxView
-    Console.printMarkup console "\n[bold]Markdown Rendering:[/bold]"
-    Console.print console mdView
+
+    -- Syntax highlighting section
+    Console.printMarkup console "\n[bold red]Syntax Highlighting[/bold red]"
+    let jsonSource = "{\n  \"name\": \"h-rich\",\n  \"version\": \"0.1.0\",\n  \"haskell\": true,\n  \"features\": null\n}"
+    Console.print console (Panel.panel (Syntax.highlightJson jsonSource))
+
+    -- Tree section
+    Console.printMarkup console "\n[bold red]Tree[/bold red]"
+    let treeNode = Tree.Node (Text.fromMarkup "[bold cyan]src[/bold cyan]")
+            [ Tree.Node (Text.fromMarkup "[yellow]HRich[/yellow]")
+                [ Tree.Node (Text.fromMarkup "Console.hs") []
+                , Tree.Node (Text.fromMarkup "Text.hs") []
+                , Tree.Node (Text.fromMarkup "[green]Style.hs[/green]") []
+                ]
+            , Tree.Node (Text.fromMarkup "[yellow]demo[/yellow]")
+                [ Tree.Node (Text.fromMarkup "[magenta]Main.hs[/magenta]") []
+                ]
+            ]
+    Console.print console (Tree.Tree treeNode)
+
+    -- Markdown section
+    Console.printMarkup console "\n[bold red]Markdown[/bold red]"
+    let mdSource = "# h-rich\n\nSupports *markdown* rendering with **bold**, *italic*, and `code`."
+    Console.print console (Panel.panel (Markdown.renderMarkdown mdSource))
+
+    -- Progress section
+    Console.printMarkup console "\n[bold red]Progress[/bold red]"
+    let progress = (Progress.progressBar 0.75 1.0) { Progress.progressLabel = Just "Installing dependencies..." }
     Console.print console (Panel.panel progress)
-    
-    Console.printMarkup console "\n[bold]Structured Logging:[/bold]"
-    Log.info logger "This is an info message"
-    Log.warn logger "This is a warning"
-    Log.error logger "This is an error with [bold]rich text[/bold] support"
-    
-    Console.printMarkup console "\n[bold]Traceback Rendering (Simulated):[/bold]"
-    Traceback.withTraceback $ do
-        P.error "Simulating a critical failure for demo purposes!"
+
+    -- Footer
+    Console.printMarkup console "\n[bold red]+more![/bold red]"
+    Console.printMarkup console "  Columns, logging, tracebacks, themes, and more...\n"
+
+    -- Closing panel
+    let closingPanel = Panel.Panel
+            { Panel.panelRenderable = Text.fromMarkup "[bold magenta]Thanks for trying h-rich![/bold magenta]\n\nA Haskell port of Python's Rich library.\n[cyan]https://github.com/jhhuh/h-rich[/cyan]"
+            , Panel.panelTitle = Just "h-rich"
+            , Panel.panelBox = rounded
+            , Panel.panelStyle = emptyStyle { color = Just (RGB 0 255 0) }
+            , Panel.panelExpand = True
+            }
+    Console.print console closingPanel
